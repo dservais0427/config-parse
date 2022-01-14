@@ -1,3 +1,11 @@
+
+""" parse_cisco_config.py: Process configuration file and save interface
+    configuration data for use in project staging worksheets.
+"""
+
+__author__ = 'David Servais'
+__version__ = '1.0'
+
 import csv
 import os
 try:
