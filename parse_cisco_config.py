@@ -86,23 +86,29 @@ def checkKey(vlan, key):
             return 'data_port'
 
 
+# Define global variables
+RE_INTERFACE = r'^interface(.+?thernet|.+?ort-[Cc]hannel|.+?oopback)'
+RE_HOSTNAME = r'^hostname\s+(\S+)'
+
+# Determine if we are using a vlan map file
 if os.path.exists('vlanmap.txt'):
     vlans = defineVlans()
     checkVlan = True
 else:
     checkVlan = False
 
+# Begin processing
 confparse = CiscoConfParse(config)
 
-hostname = confparse.re_match_iter_typed(r'^hostname\s+(\S+)')
+hostname = confparse.re_match_iter_typed(RE_HOSTNAME)
 outfile = hostname.upper() + '_interfaces.csv'
 outfile = Path(os.environ['TEMP'], outfile)
 
 intf_all = []
 
-# extract the interface details from config file
+# extract thce interface details from config file
 # get all ethernet interfaces from the configuration file
-intf_cmds = confparse.find_objects(r'^interface(.+?thernet|.+?Port-channel)')
+intf_cmds = confparse.find_objects(RE_INTERFACE)
 
 # iterate over the resulting IOSCfgLine objects and parse out desired info
 for intf_cmd in intf_cmds:
@@ -115,6 +121,9 @@ for intf_cmd in intf_cmds:
     qosCmd = []
     ipCmd = []
     rtrCmd = []
+    intShut = ''
+    vlAllow = ''
+    vlAccess = ''
 
     # get the interface name
     intf_name = intf_cmd.text[len("interface "):]
@@ -129,14 +138,14 @@ for intf_cmd in intf_cmds:
 
         if cmd.text == ' switchport mode access':
             for cmd1 in intf_cmd.re_search_children(r"^\sswitchport\saccess\svlan"):
-                intf.insert(4, cmd1.text.strip())
+                vlAccess = cmd1.text.strip()
 
             for cmd2 in intf_cmd.re_search_children(r"^\sswitchport\svoice\svlan"):
-                intf.insert(5, cmd2.text.strip())
+                vlAllow =  cmd2.text.strip()
 
         elif cmd.text == ' switchport mode trunk':
             for cmd1 in intf_cmd.re_search_children(r"^\sswitchport\strunk\snative\svlan"):
-                intf.insert(4, cmd1.text.strip())
+                vlAccess = cmd1.text.strip()
 
             for cmd2 in intf_cmd.re_search_children(r"^\sswitchport\strunk\sallowed\svlan"):
                 vlanCmd.append(cmd2.text.strip())
@@ -146,17 +155,17 @@ for intf_cmd in intf_cmds:
                     + vlanCmd[0].split()[-1]
                 for x in range(1, len(vlanCmd)):
                     vlanStr += ',' + vlanCmd[x].split()[-1]
-                intf.insert(5, vlanStr)
+                vlAllow = vlanStr
             else:
-                intf.insert(5, ','.join(vlanCmd))
+                vlAllow = ','.join(vlanCmd)
 
         else:
             for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
                 ipCmd.append(cmd1.text.strip())
-            intf.insert(4, ','.join(ipCmd))
+            vlAccess = ','.join(ipCmd)
 
     for cmd in intf_cmd.re_search_children(r"^\sshutdown"):
-        intf.insert(6, cmd.text.strip())
+        intShut = cmd.text.strip()
 
     for cmd in intf_cmd.re_search_children(r"^\sspeed|^\sduplex"):
         sdplxCmd.append(cmd.text.strip())
@@ -198,7 +207,10 @@ for intf_cmd in intf_cmds:
     for cmd in intf_cmd.re_search_children(r'^\strust\sdevice'):
         qosCmd.append(cmd.text.strip())
 
-    intf.insert(7, ','.join(sdplxCmd))
+    intf.insert(4, vlAccess)
+    intf.insert(5, vlAllow)
+    intf.insert(6, ','.join(sdplxCmd))
+    intf.insert(7, intShut)
     intf.insert(8, ','.join(exCmd))
     intf.insert(9, ','.join(stpCmd))
     intf.insert(10, ','.join(qosCmd))
@@ -214,7 +226,7 @@ with open(outfile, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, dialect='excel')
     writer.writerow(['Interface', 'New Interface', 'Type', 'Description',
                      'Access/Native', 'Voice/Allowed',
-                     'Shutdown', 'Speed/Duplex', 'Commands',
+                     'Speed/Duplex', 'Shutdown', 'Commands',
                      'STP', 'QOS', 'Routing', 'Port Security'])
 
     for x in intf_all:

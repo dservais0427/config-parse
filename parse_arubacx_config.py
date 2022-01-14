@@ -28,26 +28,69 @@ try:
 except ImportError:
     os.system('python -m pip install tkinter')
     import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog as fd
 
 # Process command line
-
 parser = argparse.ArgumentParser(description='Collect interface information \
                                  from config file and store in CSV file.')
 parser.add_argument('--config', help='Configuration file to parse.')
+parser.add_argument('--vlanmap',
+                    help='Text file containing vlan to port type mappings',
+                    default='vlanmap.txt')
 parser.add_argument('--outfile', help='CSV filename',
                     default='attribute_file_interface.csv')
+
 args = parser.parse_args()
 
 if args.config is None:
-    print('Select Configuration File')
     root = tk.Tk()
+    root.title('Select Router Configuration File')
     root.withdraw()
-    config = filedialog.askopenfilename()
+    config = fd.askopenfilename(title='Select Router Configuration File')
     if config == '':
         exit()
 else:
     config = args.config
+
+if args.vlanmap is None:
+    vlanmap = 'vlanmap.txt'
+else:
+    vlanmap = args.vlanmap
+
+
+# Define script functions
+def defineVlans():
+    vlans = {}
+
+    with open(vlanmap, 'r') as f:
+        for x in f:
+            (k, v) = x.split(',')
+            vlans[k] = v.strip()
+
+    return vlans
+
+
+def checkKey(vlan, key):
+    if key == '':
+        return 'uplink'
+    elif key.startswith('ip'):
+        return 'routed'
+    elif not checkVlan:
+        return ''
+    else:
+        key = key.split()[-1]
+
+        if key in vlan.keys():
+            return vlan[key]
+        else:
+            return 'data_port'
+
+
+if os.path.exists('vlanmap.txt'):
+    vlans = defineVlans()
+    checkVlan = True
+else:
+    checkVlan = False
 
 confparse = CiscoConfParse(config)
 
