@@ -1,6 +1,7 @@
+"""
+redact_config.py: Removes sensitive information from
+configuration files.
 
-""" redact_config.py: Removes sensitive information from
-    configuration files.
 """
 
 __author__ = 'David Servais'
