@@ -18,6 +18,7 @@ from tkinter import filedialog as fd
 
 regx = r'(.*ciphertext\s|.*key\s[057]\s|.*community\s|.*password\s[057]\s|.*md5\s[057]\s|.*secret\s[057]\s|.*key\s|.*password\scipher\s)(\S+)(.*)'
 
+# Prompt for config file
 root = tk.Tk()
 root.withdraw()
 config_file = fd.askopenfilename(title='Select Router Configuration File')
@@ -43,4 +44,5 @@ for x in cfg:
 f.close()
 r.close()
 
+# Open file for review
 os.startfile(config_redact)
