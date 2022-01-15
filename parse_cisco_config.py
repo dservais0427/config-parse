@@ -8,6 +8,7 @@ __version__ = '1.0'
 
 import csv
 import os
+import re
 try:
     from ciscoconfparse import CiscoConfParse
 except ImportError:
@@ -89,6 +90,11 @@ def checkKey(vlan, key):
 # Define global variables
 RE_INTERFACE = r'^interface(.+?thernet|.+?ort-[Cc]hannel|.+?oopback)'
 RE_HOSTNAME = r'^hostname\s+(\S+)'
+RE_PTYPE = r'^\s(switchport\smode|no\sswitchport)'
+RE_SWVOICE = r'^\sswitchport\svoice\svlan'
+RE_SWACCESS = r'^\sswitchport\saccess\svlan'
+RE_SWNATIVE = r'^\sswitchport\strunk\snative\svlan'
+RE_SWTRUNK = r'^\sswitchport\strunk\sallowed\svlan'
 
 # Determine if we are using a vlan map file
 if os.path.exists('vlanmap.txt'):
@@ -124,6 +130,7 @@ for intf_cmd in intf_cmds:
     intShut = ''
     vlAllow = ''
     vlAccess = ''
+    intDesc = ''
 
     # get the interface name
     intf_name = intf_cmd.text[len("interface "):]
@@ -131,23 +138,29 @@ for intf_cmd in intf_cmds:
 
     # search for the description command
     for cmd in intf_cmd.re_search_children(r"^\sdescription"):
-        intf.insert(3, cmd.text.strip())
+        intDesc = cmd.text.strip()
+
+    #  intf_name.startswith('lo'):
+    if re.match(r'[L|l]oopback', intf_name) is not None:
+        for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
+            ipCmd.append(cmd1.text.strip())
+        vlAccess = ','.join(ipCmd)
 
     # determine if this is a trunk or access port and capture specific info
-    for cmd in intf_cmd.re_search_children(r'^\s(switchport\smode|no\sswitchport)'):
+    for cmd in intf_cmd.re_search_children(RE_PTYPE):
 
         if cmd.text == ' switchport mode access':
-            for cmd1 in intf_cmd.re_search_children(r"^\sswitchport\saccess\svlan"):
+            for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
                 vlAccess = cmd1.text.strip()
 
-            for cmd2 in intf_cmd.re_search_children(r"^\sswitchport\svoice\svlan"):
-                vlAllow =  cmd2.text.strip()
+            for cmd2 in intf_cmd.re_search_children(RE_SWVOICE):
+                vlAllow = cmd2.text.strip()
 
         elif cmd.text == ' switchport mode trunk':
-            for cmd1 in intf_cmd.re_search_children(r"^\sswitchport\strunk\snative\svlan"):
+            for cmd1 in intf_cmd.re_search_children(RE_SWNATIVE):
                 vlAccess = cmd1.text.strip()
 
-            for cmd2 in intf_cmd.re_search_children(r"^\sswitchport\strunk\sallowed\svlan"):
+            for cmd2 in intf_cmd.re_search_children(RE_SWTRUNK):
                 vlanCmd.append(cmd2.text.strip())
 
             if len(vlanCmd) > 1:
@@ -207,6 +220,8 @@ for intf_cmd in intf_cmds:
     for cmd in intf_cmd.re_search_children(r'^\strust\sdevice'):
         qosCmd.append(cmd.text.strip())
 
+    intf.insert(2, checkKey(vlans, vlAccess))
+    intf.insert(3, intDesc)
     intf.insert(4, vlAccess)
     intf.insert(5, vlAllow)
     intf.insert(6, ','.join(sdplxCmd))
