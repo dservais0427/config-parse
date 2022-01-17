@@ -1,5 +1,6 @@
 
-""" parse_cisco_config.py: Process configuration file and save interface
+"""
+    parse_cisco_config.py: Process configuration file and save interface
     configuration data for use in project staging worksheets.
 """
 
@@ -118,19 +119,11 @@ intf_cmds = confparse.find_objects(RE_INTERFACE)
 
 # iterate over the resulting IOSCfgLine objects and parse out desired info
 for intf_cmd in intf_cmds:
+    # Clear loop variables
     intf = ['', '', '', '', '', '', '', '', '', '', '']
-    vlanCmd = []
-    exCmd = []
-    stpCmd = []
-    portsecCmd = []
-    sdplxCmd = []
-    qosCmd = []
-    ipCmd = []
-    rtrCmd = []
-    intShut = ''
-    vlAllow = ''
-    vlAccess = ''
-    intDesc = ''
+    intShut, vlAllow, vlAccess, intDesc = '', '', '', ''
+    vlanCmd, exCmd, stpCmd, portsecCmd = [], [], [], []
+    sdplxCmd, qosCmd, ipCmd, rtrCmd = [], [], [], []
 
     # get the interface name
     intf_name = intf_cmd.text[len("interface "):]
