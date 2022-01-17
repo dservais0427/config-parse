@@ -1,7 +1,8 @@
 
 """
     parse_cisco_config.py: Process configuration file and save interface
-    configuration data for use in project staging worksheets.
+    configuration data for use in project staging worksheets and Jinja
+    templates.
 """
 
 __author__ = 'David Servais'
