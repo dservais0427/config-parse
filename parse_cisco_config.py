@@ -75,7 +75,7 @@ def defineVlans():
 
 def checkKey(vlan, key):
     if key == '':
-        return 'uplink'
+        return '**CHECK**'
     elif key.startswith('ip'):
         return 'routed'
     elif not checkVlan:
