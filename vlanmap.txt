@@ -7,3 +7,5 @@
 254, management
 999, uplink
 1000, uplink
+301, access_point
+900, management
