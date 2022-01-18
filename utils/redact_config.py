@@ -17,33 +17,36 @@ except ImportError:
     import tkinter as tk
 from tkinter import filedialog as fd
 
-regx = r'(.*ciphertext\s|.*key\s[057]\s|.*community\s|.*password\s[057]\s|.*md5\s[057]\s|.*secret\s[057]\s|.*key\s|.*password\scipher\s)(\S+)(.*)'
+regx = r'(.*ciphertext\s|.*key\s[057]\s|.*community\s|.*password\s[057]\s|.*md5\s[057]\s|.*secret\s[057]\s|.*key\s|.*password\scipher\s|.*encrypted-key\s)(\S+)(.*)'
 
 # Prompt for config file
 root = tk.Tk()
 root.withdraw()
-config_file = fd.askopenfilename(title='Select Router Configuration File')
+config_file = fd.askopenfilenames(title='Select Router Configuration File')
 if config_file == '':
-    exit()
+    exit(1)
 
-p = Path(config_file)
+file_list = list(config_file)
 
-config_redact = str(p.parent) + '\\' + p.stem + '_redacted' + p.suffix
+for x in file_list:
+    p = Path(x)
 
-r = open(config_redact, 'w')
-f = open(config_file, 'r')
-cfg = f.readlines()
+    config_redact = str(p.parent) + '\\' + p.stem + '_redacted' + p.suffix
 
-for x in cfg:
-    tmp = re.search(regx, x)
-    if tmp is None:
-        r.write(x)
-    else:
-        print(tmp.group(1) + '[ --REDACTED-- ]' + tmp.group(3))
-        r.write(tmp.group(1) + '[ --REDACTED-- ]' + tmp.group(3) + '\n')
+    r = open(config_redact, 'w')
+    f = open(x, 'r')
+    cfg = f.readlines()
 
-f.close()
-r.close()
+    for x in cfg:
+        tmp = re.search(regx, x)
+        if tmp is None:
+            r.write(x)
+        else:
+            print(tmp.group(1) + '[ --REDACTED-- ]' + tmp.group(3))
+            r.write(tmp.group(1) + '[ --REDACTED-- ]' + tmp.group(3) + '\n')
 
-# Open file for review
-os.startfile(config_redact)
+    f.close()
+    r.close()
+
+    # Open file for review
+    os.startfile(config_redact)
