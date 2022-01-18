@@ -175,19 +175,19 @@ port-security 48 learn-mode limited-continuous
 port-security 48 address-limit 3
 interface 1
    tagged vlan 100
-   untagged vlan 401
+   untagged vlan 999
    port-security learn-mode limited-continuous address-limit 3
    spanning-tree bpdu-protection
    exit
 interface 2
    tagged vlan 100
-   untagged vlan 401
+   untagged vlan 2
    port-security learn-mode limited-continuous address-limit 3
    spanning-tree bpdu-protection
    exit
 interface 3
    tagged vlan 100
-   untagged vlan 401
+   untagged vlan 900
    port-security learn-mode limited-continuous address-limit 3
    spanning-tree bpdu-protection
    exit
@@ -459,7 +459,7 @@ interface 48
    disable
    name "OLD_AP"
    tagged vlan 100
-   untagged vlan 401
+   untagged vlan 301
    port-security learn-mode limited-continuous address-limit 3
    spanning-tree bpdu-protection
    exit

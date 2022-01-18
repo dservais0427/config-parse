@@ -1,0 +1,199 @@
+Running configuration:
+
+; J9146A Configuration Editor; Created on release #W.15.14.0012
+; Ver #06:04.18.63.ff.35.05:b6
+hostname "RICHARDSMDFAS02"
+module 1 type j9146a
+module 2 type j9008a
+console idle-timeout 300
+console idle-timeout serial-usb 300
+dhcp-snooping
+dhcp-snooping authorized-server 10.1.38.253
+dhcp-snooping authorized-server 10.2.38.253
+dhcp-snooping vlan 1-2 100 201 501
+trunk A1-A2 trk1 lacp
+logging 10.1.38.47
+logging 10.2.250.21
+logging 10.2.250.77
+logging facility syslog
+logging severity warning
+logging origin-id hostname
+port-security 1 learn-mode limited-continuous
+port-security 1 address-limit 3
+port-security 2 learn-mode limited-continuous
+port-security 2 address-limit 3
+port-security 3 learn-mode limited-continuous
+port-security 3 address-limit 3
+port-security 4 learn-mode limited-continuous
+port-security 4 address-limit 3
+port-security 5 learn-mode limited-continuous
+port-security 5 address-limit 3
+port-security 6 learn-mode limited-continuous
+port-security 6 address-limit 3
+port-security 7 learn-mode limited-continuous
+port-security 7 address-limit 3
+port-security 8 learn-mode limited-continuous
+port-security 8 address-limit 3
+port-security 9 learn-mode limited-continuous
+port-security 9 address-limit 3
+port-security 10 learn-mode limited-continuous
+port-security 10 address-limit 3
+port-security 11 learn-mode limited-continuous
+port-security 11 address-limit 3
+port-security 12 learn-mode limited-continuous
+port-security 12 address-limit 3
+port-security 13 learn-mode limited-continuous
+port-security 13 address-limit 3
+port-security 14 learn-mode limited-continuous
+port-security 14 address-limit 3
+port-security 15 learn-mode limited-continuous
+port-security 15 address-limit 3
+port-security 16 learn-mode limited-continuous
+port-security 16 address-limit 3
+port-security 17 learn-mode limited-continuous
+port-security 17 address-limit 3
+port-security 18 learn-mode limited-continuous
+port-security 18 address-limit 3
+port-security 19 learn-mode limited-continuous
+port-security 19 address-limit 3
+port-security 20 learn-mode limited-continuous
+port-security 20 address-limit 3
+port-security 21 learn-mode limited-continuous
+port-security 21 address-limit 3
+port-security 22 learn-mode limited-continuous
+port-security 22 address-limit 3
+port-security 23 learn-mode limited-continuous
+port-security 23 address-limit 3
+port-security 24 learn-mode limited-continuous
+port-security 24 address-limit 3
+radius-server host 10.2.250.11 key "E8nTrNzk"
+radius-server host 10.1.250.11 key "E8nTrNzk"
+timesync sntp
+sntp unicast
+sntp server priority 1 10.2.50.50
+tacacs-server host 10.1.250.11 key "E8nTrNzk"
+tacacs-server host 10.2.250.11 key "E8nTrNzk"
+tacacs-server timeout 15
+no telnet-server
+time timezone -360
+no web-management
+ip access-list standard "SNMP_Managers"
+   exit
+ip default-gateway 10.109.64.1
+ip dns domain-name "dallasisd.org"
+ip dns server-address priority 1 10.1.21.80
+ip dns server-address priority 2 10.2.21.80
+ip ssh filetransfer
+ip source-interface tacacs vlan 1
+ip source-interface sntp vlan 1
+ipv6 icmp error-interval 50 bucket-size 20
+interface 24
+   name "MDF_UPS01"
+   exit
+interface A1
+   name "Uplink_To_RICHARDSMDFCS01_8212zl_A6"
+   exit
+interface A2
+   name "Uplink_To_RICHARDSMDFCS01_8212zl_C6"
+   exit
+interface Trk1
+   dhcp-snooping trust
+   arp-protect trust
+   exit
+snmp-server community "caocao" operator
+snmp-server community "sunquan" unrestricted
+snmp-server community "SunnyDog31" operator
+snmp-server community "11ElkHtr14" operator unrestricted
+snmp-server host 10.1.41.60 community "11ElkHtr14"
+snmp-server host 10.1.41.172 community "11ElkHtr14"
+snmp-server host 10.1.33.10 community "sunquan"
+snmp-server host 10.1.33.10 community "caocao"
+snmp-server response-source dst-ip-of-request
+snmp-server trap-source 10.109.64.6
+snmp-server contact "DISD_TAC_972.925.5630" location
+ "MDF_RM_102_Near.Main.Office"
+snmpv3 enable
+snmpv3 only
+snmpv3 restricted-access
+snmpv3 group managerpriv user "WANUSER" sec-model ver3
+snmpv3 user "WANUSER"
+snmpv3 user "initial"
+aaa accounting update periodic 5
+aaa accounting commands interim-update radius
+aaa accounting exec start-stop radius
+aaa accounting session-id common
+aaa authentication login privilege-mode
+aaa authentication console login radius local
+aaa authentication console enable radius local
+aaa authentication telnet login radius local
+aaa authentication telnet enable radius local
+aaa authentication ssh login radius local
+aaa authentication ssh enable radius local
+no lldp config 1-24 dot3TlvEnable poe_config
+vlan 1
+   name "MDF_MANAGEMENT_VLAN"
+   no untagged 1-23
+   untagged 24
+   tagged Trk1
+   ip address 10.109.64.6 255.255.254.0
+   exit
+vlan 2
+   name "MDF_ACCESS_VLAN_2"
+   untagged 1-23
+   tagged Trk1
+   no ip address
+   exit
+vlan 100
+   name "VOICE_VLAN_100"
+   tagged 1-23,Trk1
+   no ip address
+   ipv6 mld blocked 1-24,Trk1
+   voice
+   exit
+vlan 201
+   name "SECURITY_CAMERA_VLAN_201"
+   tagged Trk1
+   no ip address
+   exit
+vlan 501
+   name "PORTABLES_VLAN_501"
+   tagged Trk1
+   no ip address
+   exit
+spanning-tree
+spanning-tree 1 bpdu-protection
+spanning-tree 2 bpdu-protection
+spanning-tree 3 bpdu-protection
+spanning-tree 4 bpdu-protection
+spanning-tree 5 bpdu-protection
+spanning-tree 6 bpdu-protection
+spanning-tree 7 bpdu-protection
+spanning-tree 8 bpdu-protection
+spanning-tree 9 bpdu-protection
+spanning-tree 10 bpdu-protection
+spanning-tree 11 bpdu-protection
+spanning-tree 12 bpdu-protection
+spanning-tree 13 bpdu-protection
+spanning-tree 14 bpdu-protection
+spanning-tree 15 bpdu-protection
+spanning-tree 16 bpdu-protection
+spanning-tree 17 bpdu-protection
+spanning-tree 18 bpdu-protection
+spanning-tree 19 bpdu-protection
+spanning-tree 20 bpdu-protection
+spanning-tree 21 bpdu-protection
+spanning-tree 22 bpdu-protection
+spanning-tree 23 bpdu-protection
+spanning-tree 24 bpdu-protection
+spanning-tree Trk1 priority 4
+spanning-tree config-name "RICHARDSMDFCS01"
+spanning-tree config-revision 1
+no tftp client
+no tftp server
+loop-protect 1-24
+arp-protect
+no autorun
+no dhcp config-file-update
+password manager
+password operator
+
