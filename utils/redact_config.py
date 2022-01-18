@@ -8,6 +8,7 @@ __author__ = 'David Servais'
 __version__ = '1.0'
 
 import os
+import sys
 import re
 from pathlib import Path
 try:
@@ -18,6 +19,11 @@ except ImportError:
 from tkinter import filedialog as fd
 
 regx = r'(.*ciphertext\s|.*key\s[057]\s|.*community\s|.*password\s[057]\s|.*md5\s[057]\s|.*secret\s[057]\s|.*key\s|.*password\scipher\s|.*encrypted-key\s)(\S+)(.*)'
+
+if '--noview' in sys.argv:
+    fOpen = False
+else:
+    fOpen = True
 
 # Prompt for config file
 root = tk.Tk()
@@ -49,4 +55,6 @@ for x in file_list:
     r.close()
 
     # Open file for review
-    os.startfile(config_redact)
+    if fOpen:
+        os.startfile(config_redact)
+
