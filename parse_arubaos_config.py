@@ -8,6 +8,7 @@ __version__ = '1.0'
 
 import csv
 import os
+import re
 try:
     from ciscoconfparse import CiscoConfParse
 except ImportError:
@@ -72,7 +73,7 @@ def defineVlans():
 
 def checkKey(vlan, key):
     if key == '':
-        return 'uplink'
+        return '**CHECK**'
     elif key.startswith('ip'):
         return 'routed'
     elif not checkVlan:
@@ -104,50 +105,51 @@ intf_all = []
 
 # extract the interface details from config file
 # get all ethernet interfaces from the configuration file
-interface_cmds = confparse.find_objects(r'^interface')
+interface_cmds = confparse.find_objects(r'^interface\s+(\S+)')
 
 # iterate over the resulting IOSCfgLine objects and parse out desired info
 for interface_cmd in interface_cmds:
     intf = ['', '', '', '', '', '', '', '', '', '', '']
-    exCmd = []
-    stpCmd = []
-    portsecCmd = []
-    sdplxCmd = []
-    qosCmd = []
+    exCmd, stpCmd, portsecCmd, sdplxCmd, qosCmd = [], [], [], [], []
+    intShut = ''
 
     # get the interface name
-    intf_name = interface_cmd.text[len("interface "):]
+    intf_name = interface_cmd.text[len('interface '):]
     intf.insert(0, interface_cmd.text.strip())
 
     # search for the description command
-    for cmd in interface_cmd.re_search_children(r"^\s\s\sname"):
+    for cmd in interface_cmd.re_search_children(r'^\s+name'):
         intf.insert(3, cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s\s\suntagged'):
+    for cmd in interface_cmd.re_search_children(r'^\s+untagged'):
         intf.insert(4, cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s\s\stagged'):
+    for cmd in interface_cmd.re_search_children(r'^\s+tagged'):
         intf.insert(5, cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s\s\sshutdown'):
-        intf.insert(6, cmd.text.strip())
-
-    for cmd in interface_cmd.re_search_children(r"^\s\s\sspeed|^\s\s\sduplex"):
+    for cmd in interface_cmd.re_search_children(r'^\s+speed|^\s+duplex'):
         sdplxCmd.append(cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s\s\sspanning-tree'):
+    for cmd in interface_cmd.re_search_children(r'^\s+disable'):
+        intShut = cmd.text.strip()
+
+    for cmd in interface_cmd.re_search_children(r'^\s+dhcp'):
+        exCmd.append(cmd.text.strip())
+
+    for cmd in interface_cmd.re_search_children(r'^\s+spanning-tree'):
         # intf.insert(8, cmd.text.strip())
         stpCmd.append(cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s\s\sport-security+'):
+    for cmd in interface_cmd.re_search_children(r'^\s+port-security+'):
         # intf.insert(8, cmd.text.strip())
         portsecCmd.append(cmd.text.strip())
 
-    intf.insert(7, list2string(sdplxCmd))
-    intf.insert(8, list2string(exCmd))
-    intf.insert(9, list2string(stpCmd))
-    intf.insert(10, list2string(qosCmd))
-    intf.insert(11, list2string(portsecCmd))
+    intf.insert(6, ','.join(sdplxCmd))
+    intf.insert(7, intShut)
+    intf.insert(8, ','.join(exCmd))
+    intf.insert(9, ','.join(stpCmd))
+    intf.insert(10, ','.join(qosCmd))
+    intf.insert(11, ','.join(portsecCmd))
 
     # add interface info to the all interface list
     intf_all.append(intf)
@@ -158,11 +160,11 @@ with open(outfile, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, dialect='excel')
     writer.writerow(['Interface', 'New Interface', 'Type', 'Description',
                      'Access/Native', 'Voice/Allowed',
-                     'Shutdown', 'Speed/Duplex', 'Commands',
+                     'Speed/Duplex', 'Shutdown', 'Commands',
                      'STP', 'QOS', 'Port Security'])
 
     for x in intf_all:
-        writer.writerow([x[0], x[1], 'data_port', x[3], x[4],
+        writer.writerow([x[0], x[1], checkKey(vlans, x[4]), x[3], x[4],
                          x[5], x[6], x[7], x[8], x[9], x[10], x[11]])
 
 # open csv file for review
