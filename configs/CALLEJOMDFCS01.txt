@@ -1,0 +1,1094 @@
+CALLEJOMDFCS01# sh run
+Current configuration:
+!
+!Version ArubaOS-CX FL.10.06.0140
+!export-password: default
+hostname CALLEJOMDFCS01
+banner motd !
+Adelfo Botello Callejo - CALLEJOMDFCS01
+!
+banner exec !
+          ********************************************
+          ********************************************
+                 WARNING....WARNING....WARNING
+            You have entered into a restricted site,
+            this system is to be logged into or used
+            only by specifically authorized personnel.
+            Any unauthorized use of this system is
+            unlawful, and may be subject to civil and
+            /or criminal penalties.  This system and
+            /or all other systems may be logged and/
+            or monitored without further notice, and
+            that these logs may be used as evidence
+            in court.
+          ********************************************
+          ********************************************
+!
+user admin group administrators password ciphertext AQBapfeB6X3fRaFvk4y/G8zOHViq5Z5yfsW+TYp6jdxL3z7XYgAAAPnOtyzZKHy4W/9KfPWPdpZCpMiCqdSYtmPxanZrsNRYMVU39tllKHqYfTzAk2ZDFsSLxhCskenn6lr/3G8tXamoUiRukPbLLO592NYVmJAuG2AbxooQplGh+ukt1bf8IwZX
+module 1/3 product-number r0x43a
+module 1/4 product-number r0x41a
+clock timezone us/central
+loop-protect re-enable-timer 300
+ntp server 10.2.50.50
+ntp enable
+cli-session
+    timeout 5
+!
+!
+tacacs-server key ciphertext AQBapYBuph3lQm1aYLu8shwvEArfrOoOUYS3D8WEWF5RP29fCAAAAKLbmDzoG4sJ
+tacacs-server timeout 15
+!
+!
+tacacs-server host 10.1.250.101
+tacacs-server host 10.2.250.101
+!
+aaa group server tacacs disd_tacacs
+    server 10.1.250.101
+    server 10.2.250.101
+aaa authentication login default group disd_tacacs local
+aaa authorization commands default group disd_tacacs tacacs local
+aaa accounting all-mgmt default start-stop group disd_tacacs local
+!
+aruba-central
+    disable
+logging 10.2.250.77
+ssh server vrf default
+no ssh server vrf mgmt
+ssh ciphers aes256-cbc
+dhcpv4-snooping
+dhcpv4-snooping authorized-server 10.1.38.200
+dhcpv4-snooping authorized-server 10.2.38.200
+no dhcpv4-snooping option 82
+vlan 1
+vlan 2
+    name MDF-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 11
+    name IDF01-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 21
+    name IDF02-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 31
+    name IDF03-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 41
+    name IDF04-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 51
+    name IDF05-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 100
+    name Voice-VLAN
+    voice
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 201
+    name Security-VLAN
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 301
+    name WLAN-VLAN
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 302
+    name WLAN-User-VLAN
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 501
+    name Portables-Data
+    dhcpv4-snooping
+    ip igmp snooping enable
+vlan 900
+    name MGMT
+vlan 999
+    name Blackhole
+spanning-tree mode rpvst
+spanning-tree
+spanning-tree vlan 1,2,11,21,31,41,51,100,201,301,302,501,900,999
+spanning-tree vlan 1 priority 0
+spanning-tree vlan 2 priority 0
+spanning-tree vlan 11 priority 0
+spanning-tree vlan 21 priority 0
+spanning-tree vlan 31 priority 0
+spanning-tree vlan 41 priority 0
+spanning-tree vlan 51 priority 0
+spanning-tree vlan 100 priority 0
+spanning-tree vlan 201 priority 0
+spanning-tree vlan 301 priority 0
+spanning-tree vlan 302 priority 0
+spanning-tree vlan 501 priority 0
+spanning-tree vlan 900 priority 0
+spanning-tree vlan 999 priority 0
+interface mgmt
+    shutdown
+    ip dhcp
+port-access port-security enable
+interface lag 5
+    no shutdown
+    no routing
+    vlan trunk native 999
+    vlan trunk allowed 2,100,201,301-302,501,900
+    lacp mode active
+    dhcpv4-snooping trust
+interface lag 11
+    no shutdown
+    no routing
+    vlan trunk native 999
+    vlan trunk allowed 11,100,201,301-302,501,900
+    lacp mode active
+    dhcpv4-snooping trust
+interface lag 21
+    no shutdown
+    no routing
+    vlan trunk native 999
+    vlan trunk allowed 21,100,201,301-302,501,900
+    lacp mode active
+    dhcpv4-snooping trust
+interface lag 31
+    no shutdown
+    no routing
+    vlan trunk native 999
+    vlan trunk allowed 31,100,201,301-302,501,900
+    lacp mode active
+    dhcpv4-snooping trust
+interface lag 41
+    no shutdown
+    no routing
+    vlan trunk native 999
+    vlan trunk allowed 41,100,201,301-302,501,900
+    lacp mode active
+    dhcpv4-snooping trust
+interface lag 51
+    no shutdown
+    no routing
+    vlan trunk native 999
+    vlan trunk allowed 51,100,201,301-302,501,900
+    lacp mode active
+    dhcpv4-snooping trust
+interface 1/3/1
+    no shutdown
+    description CALLEJOMDFAS01-1/3/51
+    lag 5
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/2
+    no shutdown
+    description CALLEJOMDFAS01-1/3/52
+    lag 5
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/3
+    no shutdown
+    description CALLEJOIDF01AS01-1/3/51
+    lag 11
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/4
+    no shutdown
+    description CALLEJOIDF01AS01-1/3/52
+    lag 11
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/5
+    no shutdown
+    description CALLEJOIDF02AS01-1/3/51
+    lag 21
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/6
+    no shutdown
+    description CALLEJOIDF02AS01-1/3/52
+    lag 21
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/7
+    no shutdown
+    description CALLEJOIDF03AS01-1/3/51
+    lag 31
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/8
+    no shutdown
+    description CALLEJOIDF03AS01-1/3/52
+    lag 31
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/9
+    no shutdown
+    description CALLEJOIDF04AS01-1/3/51
+    lag 41
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/10
+    no shutdown
+    description CALLEJOIDF04AS01-1/3/52
+    lag 41
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/11
+    no shutdown
+    description CALLEJOIDF05AS01-1/3/51
+    lag 51
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/12
+    no shutdown
+    description CALLEJOIDF05AS01-1/3/52
+    lag 51
+    udld
+    udld mode rfc5171 aggressive
+interface 1/3/13
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/14
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/15
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/16
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/17
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/18
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/19
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/20
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/21
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/22
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/23
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/24
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/25
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/26
+    shutdown
+    no routing
+    vlan access 1
+interface 1/3/27
+    no shutdown
+    routing
+    description Uplink DC1
+    ip address 10.1.240.6/30
+    ip ospf 1 area 0.0.0.0
+    ip ospf priority 0
+    ip ospf authentication message-digest
+    ip ospf message-digest-key 1 md5 ciphertext AQBapR6KY367/7IKu6Kms0/9AFOBBWWQ2W2Badyx18QixbXPDwAAAO/ysbP4F0xn225Eaea18w==
+interface 1/3/28
+    no shutdown
+    routing
+    description Uplink DC2
+    ip address 10.2.240.6/30
+    ip ospf 1 area 0.0.0.0
+    ip ospf priority 0
+    ip ospf authentication message-digest
+    ip ospf message-digest-key 1 md5 ciphertext AQBapR6KY367/7IKu6Kms0/9AFOBBWWQ2W2Badyx18QixbXPDwAAAO/ysbP4F0xn225Eaea18w==
+interface 1/4/1
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/2
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/3
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/4
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/5
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/6
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/7
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/8
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/9
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/10
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/11
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/12
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/13
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/14
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/15
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/16
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/17
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/18
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/19
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/20
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+       port-access port-security
+        enable
+        client-limit 3
+interface 1/4/21
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/22
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/23
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/24
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/25
+    no shutdown
+         no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/26
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/27
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/28
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/29
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/30
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/31
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/32
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/33
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/34
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/35
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/36
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/37
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/38
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/39
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/40
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/41
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/42
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/43
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/44
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/45
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/46
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+         enable
+        client-limit 3
+interface 1/4/47
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/48
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/4/49
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/4/50
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/4/51
+    no shutdown
+    no routing
+    vlan access 1
+interface 1/4/52
+    no shutdown
+    no routing
+    vlan access 1
+interface vlan 1
+    no ip dhcp
+interface vlan 2
+    description MDF-Data
+    ip address 10.130.66.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 11
+    description IDF01-Data
+    ip address 10.130.70.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 21
+    description IDF02-Data
+    ip address 10.130.72.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 31
+    description IDF03-Data
+    ip address 10.130.74.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 41
+    description IDF04-Data
+    ip address 10.130.76.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 51
+    description IDF05-Data
+    ip address 10.130.78.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 100
+    description Voice-VLAN
+    ip address 10.130.126.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 201
+    description Security-VLAN
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+interface vlan 301
+    description WLAN-VLAN
+    ip address 10.130.120.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 302
+    description WLAN-User-VLAN
+    ip address 10.198.100.1/22
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 501
+    description Portables-Data
+    ip address 10.130.118.1/23
+    ip helper-address 10.1.38.200
+    ip helper-address 10.2.38.200
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+    ip pim-sparse ip-addr any
+interface vlan 900
+    description Management
+    ip address 10.130.64.1/23
+    ip ospf 1 area 10.130.64.0
+    ip ospf passive
+    ip igmp enable
+interface vlan 999
+    description Blackhole
+    ip igmp enable
+snmp-server vrf default
+snmp-server trap-source interface vlan900 vrf default
+snmp-server system-description CALLEJOMDFCS01
+snmp-server system-location CALLEJO-MDF-Room 100
+snmp-server system-contact DISD TAC - 972.925.5630
+snmpv3 user WANUSER auth sha auth-pass ciphertext AQBapYrwuxqmh2SezZzZrzpUxpH24zzadVftTyNtm0pwqTVUDAAAANXPNjNzNFwWcSXFRA== priv aes priv-pass ciphertext AQBapZh4uV2Fvanl15PPC1CIVG9JJqy/LEQ0F+vQvHymUxdYCwAAAPYH9xDB6GXLvhUI
+snmp-server host 10.1.41.60 trap version v3 user WANUSER
+ip dns domain-name dallasisd.org
+ip dns server-address 10.1.232.27
+ip dns server-address 10.2.232.29
+!
+!
+!
+!
+!
+router ospf 1
+    router-id 10.130.64.1
+    area 0.0.0.0
+    area 10.130.64.0
+router pim
+    rp-address 10.0.0.1 239.0.1.0/24
+    rp-address 10.0.0.1 239.0.2.0/24
+ip source-interface tacacs 10.130.64.1
+ip source-interface ntp 10.130.64.1
+ip source-interface syslog 10.130.64.1
+ip source-interface dns 10.130.64.1
+no https-server vrf default
+no https-server vrf mgmt
