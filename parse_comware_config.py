@@ -1,5 +1,6 @@
 
-""" parse_comware_config.py: Process configuration file and save interface
+""" 
+    parse_comware_config.py: Process configuration file and save interface
     configuration data for use in project staging worksheets.
 """
 
@@ -49,7 +50,6 @@ args = parser.parse_args()
 
 if args.config is None:
     root = tk.Tk()
-    root.title('Select Router Configuration File')
     root.withdraw()
     config = fd.askopenfilename(title='Select Router Configuration File')
     if config == '':
@@ -77,7 +77,7 @@ def defineVlans():
 
 def checkKey(vlan, key):
     if key == '':
-        return 'uplink'
+        return '**CHECK**'
     elif key.startswith('ip'):
         return 'routed'
     elif not checkVlan:
@@ -145,7 +145,7 @@ for interface_cmd in interface_cmds:
                     vlanStr += ',' + vlanCmd[x].split()[-1]
                 intf.insert(5, vlanStr)
             else:
-                intf.insert(5, list2string(vlanCmd))
+                intf.insert(5, ','.join(vlanCmd))
 
     for cmd in interface_cmd.re_search_children(r'^\sshutdown'):
         intf.insert(6, cmd.text.strip())
@@ -160,11 +160,11 @@ for interface_cmd in interface_cmds:
     for cmd in interface_cmd.re_search_children(r'^\sstp'):
         stpCmd.append(cmd.text.strip())
 
-    intf.insert(7, list2string(sdplxCmd))
-    intf.insert(8, list2string(exCmd))
-    intf.insert(9, list2string(stpCmd))
-    intf.insert(10, list2string(qosCmd))
-    intf.insert(11, list2string(portsecCmd))
+    intf.insert(7, ','.join(sdplxCmd))
+    intf.insert(8, ','.join(exCmd))
+    intf.insert(9, ','.join(stpCmd))
+    intf.insert(10, ','.join(qosCmd))
+    intf.insert(11, ','.join(portsecCmd))
 
     # add interface info to the all interface list
     intf_all.append(intf)
