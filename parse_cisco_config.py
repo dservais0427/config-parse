@@ -47,7 +47,6 @@ args = parser.parse_args()
 
 if args.config is None:
     root = tk.Tk()
-    root.title('Select Router Configuration File')
     root.withdraw()
     config = fd.askopenfilename(title='Select Router Configuration File')
     if config == '':
