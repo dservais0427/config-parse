@@ -1,0 +1,454 @@
+﻿
+******************************************************************************
+* Copyright (c) 2010-2014 Hewlett-Packard Development Company, L.P.          *
+* Without the owner's prior written consent,                                 *
+* no decompiling or reverse-engineering shall be allowed.                    *
+******************************************************************************
+
+<GCSD-MDF-SVR-SW1>sys
+System View: return to User View with Ctrl+Z.
+[GCSD-MDF-SVR-SW1]disp cur
+#
+ version 7.1.045, Release 3106
+#
+ sysname GCSD-MDF-SVR-SW1
+#
+ clock timezone CST minus 06:00:00
+ clock summer-time CDT 02:00:00 March second Sunday 02:00:00 November first Sunday 01:00:00
+#
+ irf mac-address persistent timer
+ irf auto-update enable
+ undo irf link-delay
+ irf member 1 priority 1
+#
+ dns source-interface Vlan-interface1
+ dns domain gcsd.local
+ dns server 10.1.2.10
+ dns server 10.1.2.1
+#
+ lldp global enable
+ lldp compliance cdp
+#
+ password-recovery enable
+#
+vlan 1         
+ name Management
+#
+vlan 10
+ name Data
+#
+vlan 55
+ name iSCSI VLAN
+#
+vlan 300
+ name Security
+#
+vlan 400
+ name WiFi_Mgnt
+#
+ stp bpdu-protection
+ stp global enable
+#
+interface Bridge-Aggregation1
+ description LACP_to_GCSD-MDF-CORE-SW1
+ port link-type trunk
+ port trunk permit vlan all
+ link-aggregation mode dynamic
+#              
+interface NULL0
+#
+interface Vlan-interface1
+ description Management Interface
+ ip address 192.168.100.4 255.255.255.0
+#
+interface GigabitEthernet1/0/1
+ description MSA2040 Controller A
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/2
+ description MSA2040 Controller B
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/3
+ description GCSD-iLO-ESXi-01
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/4
+ description GCSD-iLO-AXIS
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/5
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/6
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/7
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/8
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/9
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/10
+ description UPS Management Interface
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/11
+ description RMM Vault Management
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/12
+ description RMM Vault Host
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/13
+ description Milestone Security Workstation
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/14
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#              
+interface GigabitEthernet1/0/15
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/16
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/17
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/18
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/19
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/20
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/21
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/22
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/23
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/24
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/25
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/26
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/27
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/28
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/29
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/30
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/31
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/32
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/33
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/34
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/35
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/36
+ port access vlan 10
+ broadcast-suppression pps 3000
+ undo jumboframe enable
+ stp edged-port
+#
+interface GigabitEthernet1/0/37
+ description iSCSI Traffic
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#              
+interface GigabitEthernet1/0/38
+ description iSCSI Traffic
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/39
+ description iSCSI Traffic
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/40
+ description iSCSI Traffic
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/41
+ description MSA2040 Host Port A1
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/42
+ description MSA2040 Host Port B1
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/43
+ description MSA2040 Host Port A2
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/44
+ description MSA2040 Host Port B2
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/45
+ description MSA2040 Host Port A3
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/46
+ description MSA2040 Host Port B3
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/47
+ description MSA2040 Host Port A4
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface GigabitEthernet1/0/48
+ description MSA2040 Host Port B4
+ port access vlan 55
+ broadcast-suppression pps 3000
+ stp edged-port
+#
+interface Ten-GigabitEthernet1/0/49
+ description Link_to_GCSD-MDF-CORE-SW1
+ port link-type trunk
+ port trunk native vlan 1
+ port trunk permit vlan all
+ port link-aggregation group 1
+#
+interface Ten-GigabitEthernet1/0/50
+ description Link_to_GCSD-MDF-CORE-SW1
+ port link-type trunk
+ port trunk native vlan 1
+ port trunk permit vlan all
+ port link-aggregation group 1
+#
+interface Ten-GigabitEthernet1/0/51
+#
+interface Ten-GigabitEthernet1/0/52
+#
+ scheduler logfile size 16
+#
+line class aux
+ user-role network-admin
+#
+line class vty
+ user-role network-operator
+#
+line aux 0
+ user-role network-admin
+#
+line vty 0 4
+ authentication-mode scheme
+ user-role network-operator
+ protocol inbound ssh
+#
+line vty 5 63
+ user-role network-operator
+#
+ ip route-static 0.0.0.0 0 192.168.100.1
+#
+ ssh server enable
+#
+ ntp-service unicast-server 24.56.178.140 source Vlan-interface1
+#
+domain system
+#
+ domain default enable system
+#
+role name level-0
+ description Predefined level-0 role
+#
+role name level-1
+ description Predefined level-1 role
+#
+role name level-2
+ description Predefined level-2 role
+#
+role name level-3
+ description Predefined level-3 role
+#
+role name level-4
+ description Predefined level-4 role
+#
+role name level-5
+ description Predefined level-5 role
+#
+role name level-6
+ description Predefined level-6 role
+#
+role name level-7
+ description Predefined level-7 role
+#
+role name level-8
+ description Predefined level-8 role
+#              
+role name level-9
+ description Predefined level-9 role
+#
+role name level-10
+ description Predefined level-10 role
+#
+role name level-11
+ description Predefined level-11 role
+#
+role name level-12
+ description Predefined level-12 role
+#
+role name level-13
+ description Predefined level-13 role
+#
+role name level-14
+ description Predefined level-14 role
+#
+user-group system
+#
+local-user admin class manage
+ password hash $h$6$wG6qCVDBJlGSLx3j$xhKSHWZUwvQ6rCeYoROwIK0HIgHc8U4msCzYJupnKcPJcMm1h2ERRF9GlnCkSAJl1zBY1kYqQVdHLXQ6Bi8V5g==
+ service-type ssh
+ authorization-attribute user-role network-admin
+ authorization-attribute user-role network-operator
+#
+return
