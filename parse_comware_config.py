@@ -1,5 +1,5 @@
 
-""" 
+"""
     parse_comware_config.py: Process configuration file and save interface
     configuration data for use in project staging worksheets.
 """
@@ -9,11 +9,6 @@ __version__ = '1.0'
 
 import csv
 import os
-try:
-    import customvlan as vlan
-    chackVlan = True
-except ImportError:
-    checkVlan = False
 try:
     from ciscoconfparse import CiscoConfParse
 except ImportError:
@@ -99,7 +94,7 @@ else:
 
 confparse = CiscoConfParse(config)
 
-hostname = confparse.re_match_iter_typed(r'^sysname\s+(\S+)')
+hostname = confparse.re_match_iter_typed(r'sysname\s+(\S+)', default='unknown')
 outfile = hostname.upper() + '_interfaces.csv'
 outfile = Path(os.environ['TEMP'], outfile)
 
@@ -130,22 +125,15 @@ for interface_cmd in interface_cmds:
     # determine if this is a trunk or access port and capture specific info
     for cmd in interface_cmd.re_search_children(r'^\sport\slink-type'):
 
-        if cmd.text == ' port link-type access':
-            for cmd1 in interface_cmd.re_search_children(r'^\sport\saccess\svlan'):
-                intf.insert(4, cmd1.text.strip())
-        else:
-            for cmd1 in interface_cmd.re_search_children(r'\sport\strunk\snative'):
-                intf.insert(4, cmd1.text.strip())
+        if cmd.text == ' port link-type trunk':
+            cmd1 = interface_cmd.re_match_iter_typed(r'\sport\strunk\snative', default='vlan 1')
+            intf.insert(4, cmd1.strip())
 
-            for cmd2 in interface_cmd.re_search_children(r'\sport\strunk\spermit'):
-                vlanCmd.append(cmd2.text.strip())
-            if len(vlanCmd) > 1:
-                vlanStr = 'port trunk permit vlan ' + vlanCmd[0].split()[-1]
-                for x in range(1, len(vlanCmd)):
-                    vlanStr += ',' + vlanCmd[x].split()[-1]
-                intf.insert(5, vlanStr)
-            else:
-                intf.insert(5, ','.join(vlanCmd))
+            # cmd2 = interface_cmd.re_match_iter_typed(r'\sport\strunk\spermit', default='vlan all')
+            # intf.insert(5, cmd2.strip())
+
+    for cmd1 in interface_cmd.re_search_children(r'^\sport\saccess\svlan'):
+        intf.insert(4, cmd1.text.strip())
 
     for cmd in interface_cmd.re_search_children(r'^\sshutdown'):
         intf.insert(6, cmd.text.strip())
@@ -165,7 +153,7 @@ for interface_cmd in interface_cmds:
     intf.insert(9, ','.join(stpCmd))
     intf.insert(10, ','.join(qosCmd))
     intf.insert(11, ','.join(portsecCmd))
-
+    
     # add interface info to the all interface list
     intf_all.append(intf)
 
