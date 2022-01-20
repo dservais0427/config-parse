@@ -1,5 +1,5 @@
 
-""" 
+"""
     parse_arubacx_config.py: Process configuration file and save interface
     configuration data for use in project staging worksheets.
 """
