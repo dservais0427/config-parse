@@ -91,7 +91,7 @@ def checkKey(vlan, key):
 # Define global variables
 RE_INTERFACE = r'^interface(.+?thernet|.+?ort-[Cc]hannel|.+?oopback)'
 RE_HOSTNAME = r'^hostname\s+(\S+)'
-RE_PTYPE = r'^\s(switchport\smode|no\sswitchport)'
+RE_PTYPE = r'^\s(switchport\saccess|no\sswitchport)'
 RE_SWVOICE = r'^\sswitchport\svoice\svlan'
 RE_SWACCESS = r'^\sswitchport\saccess\svlan'
 RE_SWNATIVE = r'^\sswitchport\strunk\snative\svlan'
@@ -142,7 +142,7 @@ for intf_cmd in intf_cmds:
     # determine if this is a trunk or access port and capture specific info
     for cmd in intf_cmd.re_search_children(RE_PTYPE):
 
-        if cmd.text == ' switchport mode access':
+        if cmd.text.startswith(' switchport access'):
             for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
                 vlAccess = cmd1.text.strip()
 
