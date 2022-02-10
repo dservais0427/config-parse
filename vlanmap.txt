@@ -1,5 +1,7 @@
-100, voice_port
-201, security
-301, ap
+240, voice_port
+150, security
+250, security
+252, management
 999, uplink
-900, other
+254, management
+230, non_human_port
