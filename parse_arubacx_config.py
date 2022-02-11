@@ -191,13 +191,13 @@ for intf_cmd in interface_cmds:
 # Output data to CSV file
 with open(outfile, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, dialect='excel')
-    writer.writerow(['Interface', 'New Interface', 'Type', 'Description',
-                     'Access/Native', 'Voice/Allowed',
-                     'Speed/Duplex', 'Shutdown', 'Commands',
-                     'STP', 'QOS', 'Routing'])
+    writer.writerow(['Interface', 'Switch', 'New Interface', 'Type',
+                     'Description', 'Access/Native', 'Voice/Allowed',
+                     'Speed/Duplex', 'Shutdown', 'Commands', 'STP',
+                     'QOS', 'Routing'])
 
     for x in intf_all:
-        writer.writerow([x[0], x[1], checkKey(vlans, x[4].strip()),
+        writer.writerow([x[0], '', x[1], checkKey(vlans, x[4].strip()),
                          x[3], x[4], x[5], x[6], x[7], x[8], x[9],
                          x[10], x[11]])
 

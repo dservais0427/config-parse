@@ -5,3 +5,8 @@
 999, uplink
 254, management
 230, non_human_port
+100, voice_port
+201, security
+301, ap
+900, management
+'', data_port
