@@ -5,13 +5,13 @@
 * no decompiling or reverse-engineering shall be allowed.                    *
 ******************************************************************************
 
-<GCSD-MDF-SVR-SW1>sys
+<XXXX-MDF-SVR-SW1>sys
 System View: return to User View with Ctrl+Z.
-[GCSD-MDF-SVR-SW1]disp cur
+[XXXX-MDF-SVR-SW1]disp cur
 #
  version 7.1.045, Release 3106
 #
- sysname GCSD-MDF-SVR-SW1
+ sysname XXXX-MDF-SVR-SW1
 #
  clock timezone CST minus 06:00:00
  clock summer-time CDT 02:00:00 March second Sunday 02:00:00 November first Sunday 01:00:00
@@ -22,7 +22,7 @@ System View: return to User View with Ctrl+Z.
  irf member 1 priority 1
 #
  dns source-interface Vlan-interface1
- dns domain gcsd.local
+ dns domain XXXX.local
  dns server 10.1.2.10
  dns server 10.1.2.1
 #
@@ -50,7 +50,7 @@ vlan 400
  stp global enable
 #
 interface Bridge-Aggregation1
- description LACP_to_GCSD-MDF-CORE-SW1
+ description LACP_to_XXXX-MDF-CORE-SW1
  port link-type trunk
  port trunk permit vlan all
  link-aggregation mode dynamic
@@ -74,13 +74,13 @@ interface GigabitEthernet1/0/2
  stp edged-port
 #
 interface GigabitEthernet1/0/3
- description GCSD-iLO-ESXi-01
+ description XXXX-iLO-ESXi-01
  broadcast-suppression pps 3000
  undo jumboframe enable
  stp edged-port
 #
 interface GigabitEthernet1/0/4
- description GCSD-iLO-AXIS
+ description XXXX-iLO-AXIS
  broadcast-suppression pps 3000
  undo jumboframe enable
  stp edged-port
@@ -352,14 +352,14 @@ interface GigabitEthernet1/0/48
  stp edged-port
 #
 interface Ten-GigabitEthernet1/0/49
- description Link_to_GCSD-MDF-CORE-SW1
+ description Link_to_XXXX-MDF-CORE-SW1
  port link-type trunk
  port trunk native vlan 1
  port trunk permit vlan all
  port link-aggregation group 1
 #
 interface Ten-GigabitEthernet1/0/50
- description Link_to_GCSD-MDF-CORE-SW1
+ description Link_to_XXXX-MDF-CORE-SW1
  port link-type trunk
  port trunk native vlan 1
  port trunk permit vlan all
@@ -446,7 +446,7 @@ role name level-14
 user-group system
 #
 local-user admin class manage
- password hash $h$6$wG6qCVDBJlGSLx3j$xhKSHWZUwvQ6rCeYoROwIK0HIgHc8U4msCzYJupnKcPJcMm1h2ERRF9GlnCkSAJl1zBY1kYqQVdHLXQ6Bi8V5g==
+ password hash [ --REDACTED-- ]
  service-type ssh
  authorization-attribute user-role network-admin
  authorization-attribute user-role network-operator

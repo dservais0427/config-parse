@@ -3,7 +3,7 @@ Running configuration:
 ; JL074A Configuration Editor; Created on release #KB.16.04.0008
 ; Ver #10:9b.7f.bf.bb.ff.7c.59.fc.7b.ff.ff.fc.ff.ff.3f.ef:81
 
-hostname "PEGASUSLAB211AS01"
+hostname "ARUBAOS01"
 module 1 type jl074x
 module 2 type jl074y
 flexible-module A type JL083A
@@ -61,22 +61,21 @@ spanning-tree 48 bpdu-protection
 ip access-list standard "SNMP_Managers"
    exit
 ip default-gateway 10.81.128.1
-ip dns domain-name "ead.dallasisd.org"
+ip dns domain-name "dnsname.com"
 ip dns server-address priority 1 10.1.21.80
 ip dns server-address priority 2 10.2.21.84
 timesync sntp
 sntp unicast
 sntp server priority 1 10.2.50.50
-tacacs-server host 10.1.250.101 key "ISEcr3@m"
-tacacs-server host 10.2.250.101 key "ISEcr3@m"
+tacacs-server host 10.1.250.101 key [ --REDACTED-- ]
+tacacs-server host 10.2.250.101 key [ --REDACTED-- ]
 tacacs-server timeout 15
-snmp-server community "public" unrestricted
-snmp-server community "SunnyDog31" operator
-snmp-server community "11ElkHtr14" operator unrestricted
-snmp-server host 10.1.41.60 community "11ElkHtr14"
-snmp-server host 10.1.41.172 community "11ElkHtr14"
+snmp-server community [ --REDACTED-- ] unrestricted
+snmp-server community [ --REDACTED-- ] operator
+snmp-server community [ --REDACTED-- ] operator unrestricted
+snmp-server host 10.1.41.60 community [ --REDACTED-- ]
+snmp-server host 10.1.41.172 community [ --REDACTED-- ]
 snmp-server response-source 10.81.129.201
-snmp-server contact "DISD_TAC_972.925.5630" location "RM 211"
 port-security 1 learn-mode limited-continuous
 port-security 1 address-limit 3
 port-security 2 learn-mode limited-continuous

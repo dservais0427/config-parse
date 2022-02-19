@@ -30,7 +30,7 @@ domain system
 user-group system
 #
 local-user admin
- password cipher $c$4$pBfoabrc+7elCAvXrDqjFXl1AcI9/vTTtQSFFFhmE4wY2rQ72Kh1
+ password cipher [ --REDACTED-- ]
  authorization-attribute level 3
  service-type ssh telnet terminal
  service-type web
@@ -322,8 +322,8 @@ interface GigabitEthernet1/0/52
 #
  snmp-agent
  snmp-agent local-engineid 800063A203CC3E5F7AA46D
- snmp-agent community read public 
- snmp-agent community write private 
+ snmp-agent community [ --REDACTED-- ] public 
+ snmp-agent community [ --REDACTED-- ] private 
  snmp-agent sys-info version all
 #
  ntp-service source-interface Vlan-interface10

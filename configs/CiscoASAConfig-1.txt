@@ -1,9 +1,9 @@
-: Serial Number: JAD210206ND
+: Serial Number: 1
 : Hardware:   ASA5516, 8192 MB RAM, CPU Atom C2000 series 2416 MHz, 1 CPU (8 cores)
 :
 ASA Version 9.8(4)39 
 !
-hostname SG-CLRK-ASA
+hostname CISCOASA
 domain-name suwgov.org
 enable password o/2ryKNd9ucacep0 encrypted
 xlate per-session deny tcp any4 any4
@@ -14,7 +14,7 @@ xlate per-session deny udp any4 any4 eq domain
 xlate per-session deny udp any4 any6 eq domain
 xlate per-session deny udp any6 any4 eq domain
 xlate per-session deny udp any6 any6 eq domain
-passwd o/2ryKNd9ucacep0 encrypted
+passwd [ --REDACTED-- ] encrypted
 names
 no mac-address auto
 ip local pool vpn_users 172.16.30.1-172.16.30.30 mask 255.255.255.224
@@ -51,7 +51,7 @@ interface GigabitEthernet1/2.801
  ip address 10.199.61.1 255.255.255.0 standby 10.199.61.2 
 !
 interface GigabitEthernet1/2.802
- description DMZ0.802 172.29.95.0/28 CLERICUS
+ description DMZ0.802 172.29.95.0/28 
  shutdown
  vlan 802
  nameif DMZ0.802
@@ -59,7 +59,7 @@ interface GigabitEthernet1/2.802
  ip address 172.29.95.1 255.255.255.240 standby 172.29.95.2 
 !
 interface GigabitEthernet1/2.803
- description DMZ0.803 172.29.95.32/27 SMARTCOP
+ description DMZ0.803 172.29.95.32/27 
  shutdown
  vlan 803
  nameif DMZ0.803
@@ -67,28 +67,28 @@ interface GigabitEthernet1/2.803
  ip address 172.29.95.33 255.255.255.224 standby 172.29.95.34 
 !
 interface GigabitEthernet1/2.804
- description DMZ0.804 200.10.10.0/24 SGPROPAPPR_LEGACY
+ description DMZ0.804 200.10.10.0/24 
  vlan 804
  nameif DMZ0.804
  security-level 57
  ip address 200.10.10.253 255.255.255.0 standby 200.10.10.254 
 !
 interface GigabitEthernet1/2.805
- description DMZ0.805 172.29.95.64/29 VINE_AWACS_DMZ
+ description DMZ0.805 172.29.95.64/29 
  vlan 805
  nameif DMZ0.805
  security-level 57
  ip address 172.29.95.65 255.255.255.248 standby 172.29.95.66 
 !
 interface GigabitEthernet1/2.807
- description DMZ0.807 172.29.95.72/29 CLERK_WEB_SERVER
+ description DMZ0.807 172.29.95.72/29 
  vlan 807
  nameif DMZ0.807
  security-level 50
  ip address 172.29.95.73 255.255.255.248 standby 172.29.95.74 
 !
 interface GigabitEthernet1/2.808
- description DMZ0.808 172.29.95.96/29 COREMR_DMZ
+ description DMZ0.808 172.29.95.96/29 
  vlan 808
  nameif DMZ0.808
  security-level 57
@@ -3241,14 +3241,14 @@ timeout igp stale-route 0:01:10
 aaa-server TACACS protocol tacacs+
 aaa-server TACACS (inside) host 172.29.4.9
  timeout 15
- key *****
+ key [ --REDACTED-- ]
 aaa-server TACACS (inside) host 172.29.12.9
  timeout 15
- key *****
+ key [ --REDACTED-- ]
 aaa-server SO_TACACS protocol tacacs+
 aaa-server SO_TACACS (inside) host 172.29.4.199
  timeout 15
- key *****
+ key [ --REDACTED-- ]
 user-identity default-domain LOCAL
 aaa authentication serial console LOCAL 
 aaa authentication http console TACACS LOCAL
@@ -3260,13 +3260,13 @@ aaa authentication login-history
 http server enable
 http 172.29.6.8 255.255.255.255 inside
 http 172.29.4.83 255.255.255.255 inside
-snmp-server host inside 172.29.12.9 community ***** version 2c
-snmp-server host outside 45.33.15.122 poll community ***** version 2c
-snmp-server host inside 172.29.6.4 community ***** version 2c
-snmp-server host inside 172.29.6.12 community *****
+snmp-server host inside 172.29.12.9 community [ --REDACTED-- ] version 2c
+snmp-server host outside 45.33.15.122 poll community [ --REDACTED-- ] version 2c
+snmp-server host inside 172.29.6.4 community [ --REDACTED-- ] version 2c
+snmp-server host inside 172.29.6.12 community [ --REDACTED-- ]
 snmp-server location Suwannee_Clerk's_Office_DC
 snmp-server contact Vance Baker
-snmp-server community *****
+snmp-server community [ --REDACTED-- ]
 snmp-server enable traps syslog
 service sw-reset-button
 crypto ipsec ikev1 transform-set AES esp-aes esp-sha-hmac 
@@ -3292,8 +3292,8 @@ crypto map c_map 64000 ipsec-isakmp dynamic DYN_MAP
 crypto map c_map interface outside
 crypto ca trustpoint SUWGOV_TrustPoint
  enrollment self
- fqdn sslvpn.suwgov.org
- subject-name CN=sslvpn.suwgov.org
+ fqdn sslvpn.xxx.org
+ subject-name CN=sslvpn.xxx.org
  keypair sslvpnkey
  crl configure
 crypto ca trustpool policy
@@ -3486,7 +3486,7 @@ tunnel-group SUWCLERK-VPN general-attributes
  authentication-server-group (outside) TACACS
  default-group-policy vpn
 tunnel-group SUWCLERK-VPN ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
  isakmp keepalive threshold 20 retry 2
 tunnel-group SUWCRTSEC-VPN type remote-access
 tunnel-group SUWCRTSEC-VPN general-attributes
@@ -3494,17 +3494,17 @@ tunnel-group SUWCRTSEC-VPN general-attributes
  authentication-server-group (outside) TACACS
  default-group-policy SUWCRTSEC-VPN
 tunnel-group SUWCRTSEC-VPN ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
  isakmp keepalive threshold 20 retry 2
 tunnel-group 162.39.248.41 type ipsec-l2l
 tunnel-group 162.39.248.41 ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
 tunnel-group 151.213.249.85 type ipsec-l2l
 tunnel-group 151.213.249.85 ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
 tunnel-group 139.55.134.4 type ipsec-l2l
 tunnel-group 139.55.134.4 ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
  isakmp keepalive threshold 60 retry 2
 tunnel-group SUWMONITOR-VPN type remote-access
 tunnel-group SUWMONITOR-VPN general-attributes
@@ -3512,7 +3512,7 @@ tunnel-group SUWMONITOR-VPN general-attributes
  authentication-server-group (outside) TACACS
  default-group-policy SUWMONITOR-VPN
 tunnel-group SUWMONITOR-VPN ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
  isakmp keepalive threshold 20 retry 2
 tunnel-group SG_SSL_VPN type remote-access
 tunnel-group SG_SSL_VPN general-attributes
@@ -3544,7 +3544,7 @@ tunnel-group SG_SVCPROVDR_SSL_VPN webvpn-attributes
  group-alias SG_SVCPROVDR_SSL_VPN enable
 tunnel-group 50.220.214.18 type ipsec-l2l
 tunnel-group 50.220.214.18 ipsec-attributes
- ikev1 pre-shared-key *****
+ ikev1 pre-shared-key [ --REDACTED-- ]
  isakmp keepalive threshold 60 retry 2
 !
 class-map netflow-export-class

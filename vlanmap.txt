@@ -9,4 +9,3 @@
 201, security
 301, ap
 900, management
-'', data_port

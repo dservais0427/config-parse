@@ -1,11 +1,8 @@
-CALLEJOIDF05AS01
-Current configuration:
 !
 !Version ArubaOS-CX FL.10.06.0140
 !export-password: default
-hostname CALLEJOIDF05AS01
+hostname ARUBACX01
 banner motd !
-Adelfo Botello Callejo - CALLEJOIDF05AS01
 !
 banner exec !
           ********************************************
@@ -24,11 +21,12 @@ banner exec !
           ********************************************
           ********************************************
 !
-user admin group administrators password ciphertext AQBapYvn8rBwR5CpBRFfJrt5uKeiTLwPUw+9W9d80JOoUxcXYgAAADfSULTsIYw+3rh+yzCmZk+UbJxuzAiXEZ3TRreEDudlP6oiK3dS9X4As3FPqiSbO09fghpBTnrFOQjftOzv9qkApVtCzbXnr5zvV5rqEx+wAhFYunLRf0b4ho9bPAQnW5AV
+user admin group administrators password ciphertext [ --REDACTED-- ]
 module 1/3 product-number r0x41a
 module 1/4 product-number r0x38b
 module 1/5 product-number r0x38b
 module 1/6 product-number r0x38b
+module 1/7 product-number r0x38b
 clock timezone us/central
 loop-protect re-enable-timer 300
 ntp server 10.2.50.50
@@ -37,34 +35,33 @@ cli-session
     timeout 5
 !
 !
-tacacs-server key ciphertext AQBapYBuph3lQm1aYLu8shwvEArfrOoOUYS3D8WEWF5RP29fCAAAAKLbmDzoG4sJ
+tacacs-server key ciphertext [ --REDACTED-- ]
 tacacs-server timeout 15
 !
 !
 tacacs-server host 10.1.250.101
 tacacs-server host 10.2.250.101
 !
-aaa group server tacacs disd_tacacs
+aaa group server tacacs xxxx_tacacs
     server 10.1.250.101
     server 10.2.250.101
-aaa authentication login default group disd_tacacs local
-aaa authorization commands default group disd_tacacs tacacs local
-aaa accounting all-mgmt default start-stop group disd_tacacs local
+aaa authentication login default group xxxx_tacacs local
+aaa authorization commands default group xxxx_tacacs tacacs local
+aaa accounting all-mgmt default start-stop group xxxx_tacacs local
 !
+aruba-central
+    disable
 logging 10.2.250.77
 ssh server vrf default
 no ssh server vrf mgmt
 ssh ciphers aes256-cbc
-access-list ip PIM-RP-FILTER
-    10 permit any 239.0.1.0 0.0.0.255
-    20 permit any 239.0.2.0 0.0.0.255
-    30 deny any any any
 dhcpv4-snooping
 dhcpv4-snooping authorized-server 10.1.38.200
 dhcpv4-snooping authorized-server 10.2.38.200
+no dhcpv4-snooping option 82
 vlan 1
-vlan 51
-    name IDF05-Data
+vlan 2
+    name MDF-Data
     dhcpv4-snooping
     ip igmp snooping enable
 vlan 100
@@ -85,7 +82,7 @@ vlan 302
     dhcpv4-snooping
     ip igmp snooping enable
 vlan 501
-    name Portables-Data
+    name PORTABLES_VLAN
     dhcpv4-snooping
     ip igmp snooping enable
 vlan 900
@@ -94,114 +91,126 @@ vlan 999
     name Blackhole
 spanning-tree mode rpvst
 spanning-tree
-spanning-tree vlan 1,51,100,201,301,302,501,900,999
+spanning-tree vlan 1,2,100,201,301,302,501,900,999
 interface mgmt
     shutdown
     ip dhcp
 port-access port-security enable
-interface lag 51
+interface lag 5
     no shutdown
-    description Uplink to CALLEJOMDFCS01
+    description ARUBACX-PO5
     no routing
     vlan trunk native 999
-    vlan trunk allowed 51,100,201,301-302,501,900
+    vlan trunk allowed 2,100,201,301-302,501,900
     lacp mode active
     dhcpv4-snooping trust
+interface 1/3/27
+    no shutdown
+    routing
+    description Uplink DC1
+    ip address 10.1.240.6/30
+    ip ospf 1 area 0.0.0.0
+    ip ospf priority 0
+    ip ospf authentication message-digest
+    ip ospf message-digest-key 1 md5 ciphertext [ --REDACTED-- ]
+interface 1/3/28
+    no shutdown
+    routing
+    description Uplink DC2
+    ip address 10.2.240.6/30
+    ip ospf 1 area 0.0.0.0
+    ip ospf priority 0
+    ip ospf authentication message-digest
+    ip ospf message-digest-key 1 md5 ciphertext [ --REDACTED-- ]
 interface 1/3/1
     no shutdown
-    description ACCESS POINT
+    description RM-154-AP34
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/2
     no shutdown
-    description ACCESS POINT
+    description RM-159-AP35
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/3
     no shutdown
-    description ACCESS POINT
+    description RM-157-AP36
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/4
     no shutdown
-    description ACCESS POINT
+    description RM-155-AP37
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/5
     no shutdown
-    description ACCESS POINT
+    description RM-153-AP38
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/6
     no shutdown
-    description ACCESS POINT
+    description RM-053
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/7
     no shutdown
-    description ACCESS POINT
+    description RM-068-AP06
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/8
     no shutdown
-    description ACCESS POINT
+    description RM-075-AP04
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/9
     no shutdown
-    description ACCESS POINT
+    description RM-055-AP09
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/10
     no shutdown
-    description ACCESS POINT
+    description RM-059-AP07
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/11
     no shutdown
-    description ACCESS POINT
+    description RM-259-AP64
     no routing
     vlan trunk native 301
     vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
 interface 1/3/12
-    no shutdown
+    shutdown
+    description RM-257-AP66
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan trunk native 301
+    vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
-    port-access port-security
-        enable
-        client-limit 3
 interface 1/3/13
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -212,48 +221,30 @@ interface 1/3/13
         client-limit 3
 interface 1/3/14
     no shutdown
+    description RM-255-AP67
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan trunk native 301
+    vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
-    port-access port-security
-        enable
-        client-limit 3
 interface 1/3/15
     no shutdown
+    description RM-253-AP68
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan trunk native 301
+    vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
-    port-access port-security
-        enable
-        client-limit 3
 interface 1/3/16
     no shutdown
+    description RM-251-AP69
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan trunk native 301
+    vlan trunk allowed 301-302
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
-    port-access port-security
-        enable
-        client-limit 3
 interface 1/3/17
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -265,8 +256,8 @@ interface 1/3/17
 interface 1/3/18
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -278,8 +269,8 @@ interface 1/3/18
 interface 1/3/19
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -291,8 +282,8 @@ interface 1/3/19
 interface 1/3/20
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -304,8 +295,8 @@ interface 1/3/20
 interface 1/3/21
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -317,8 +308,8 @@ interface 1/3/21
 interface 1/3/22
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -330,8 +321,8 @@ interface 1/3/22
 interface 1/3/23
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -343,8 +334,8 @@ interface 1/3/23
 interface 1/3/24
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -355,61 +346,45 @@ interface 1/3/24
         client-limit 3
 interface 1/3/25
     no shutdown
+    description HVAC_SWITCH
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan access 900
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
     port-access port-security
         enable
         client-limit 3
 interface 1/3/26
     no shutdown
+    description HVAC_527
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan access 900
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
     port-access port-security
         enable
         client-limit 3
 interface 1/3/27
     no shutdown
+    description HVAC_527
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan access 900
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
     port-access port-security
         enable
         client-limit 3
 interface 1/3/28
     no shutdown
+    description HVAC_527
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan access 900
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
     port-access port-security
         enable
         client-limit 3
 interface 1/3/29
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -421,8 +396,8 @@ interface 1/3/29
 interface 1/3/30
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -434,8 +409,8 @@ interface 1/3/30
 interface 1/3/31
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -447,8 +422,8 @@ interface 1/3/31
 interface 1/3/32
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -460,8 +435,8 @@ interface 1/3/32
 interface 1/3/33
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -473,8 +448,8 @@ interface 1/3/33
 interface 1/3/34
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -486,8 +461,8 @@ interface 1/3/34
 interface 1/3/35
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -499,8 +474,8 @@ interface 1/3/35
 interface 1/3/36
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -511,9 +486,10 @@ interface 1/3/36
         client-limit 3
 interface 1/3/37
     no shutdown
+    description AC_CONTROLS
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -524,9 +500,10 @@ interface 1/3/37
         client-limit 3
 interface 1/3/38
     no shutdown
+    description AC_CONTROLS
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -537,9 +514,10 @@ interface 1/3/38
         client-limit 3
 interface 1/3/39
     no shutdown
+    description AC_CONTROLS
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -550,9 +528,10 @@ interface 1/3/39
         client-limit 3
 interface 1/3/40
     no shutdown
+    description AC_CONTROLS
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -564,8 +543,8 @@ interface 1/3/40
 interface 1/3/41
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -577,8 +556,8 @@ interface 1/3/41
 interface 1/3/42
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -589,35 +568,26 @@ interface 1/3/42
         client-limit 3
 interface 1/3/43
     no shutdown
+    description card-reader
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan access 900
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
     port-access port-security
         enable
         client-limit 3
 interface 1/3/44
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
-    spanning-tree bpdu-guard
+    vlan access 900
     spanning-tree port-type admin-edge
-    spanning-tree root-guard
-    loop-protect
-    loop-protect action tx-rx-disable
     port-access port-security
         enable
         client-limit 3
 interface 1/3/45
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -629,8 +599,8 @@ interface 1/3/45
 interface 1/3/46
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -642,8 +612,8 @@ interface 1/3/46
 interface 1/3/47
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -655,8 +625,8 @@ interface 1/3/47
 interface 1/3/48
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -675,21 +645,21 @@ interface 1/3/50
     vlan access 1
 interface 1/3/51
     no shutdown
-    description Uplink to CALLEJOMDFCS01-1/3/11
-    lag 51
+    description HOLMESZMDFCS01-1/3/1
+    lag 5
     udld
     udld mode rfc5171 aggressive
 interface 1/3/52
     no shutdown
-    description Uplink to CALLEJOMDFCS01-1/3/12
-    lag 51
+    description HOLMESZMDFCS01-1/3/2
+    lag 5
     udld
     udld mode rfc5171 aggressive
 interface 1/4/1
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -701,8 +671,8 @@ interface 1/4/1
 interface 1/4/2
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -714,8 +684,8 @@ interface 1/4/2
 interface 1/4/3
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -727,8 +697,8 @@ interface 1/4/3
 interface 1/4/4
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -740,8 +710,8 @@ interface 1/4/4
 interface 1/4/5
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -753,8 +723,8 @@ interface 1/4/5
 interface 1/4/6
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -766,8 +736,8 @@ interface 1/4/6
 interface 1/4/7
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -779,8 +749,8 @@ interface 1/4/7
 interface 1/4/8
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -792,8 +762,8 @@ interface 1/4/8
 interface 1/4/9
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -805,8 +775,8 @@ interface 1/4/9
 interface 1/4/10
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -818,8 +788,8 @@ interface 1/4/10
 interface 1/4/11
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -831,8 +801,8 @@ interface 1/4/11
 interface 1/4/12
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -844,8 +814,8 @@ interface 1/4/12
 interface 1/4/13
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -857,8 +827,8 @@ interface 1/4/13
 interface 1/4/14
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -870,8 +840,8 @@ interface 1/4/14
 interface 1/4/15
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -883,8 +853,8 @@ interface 1/4/15
 interface 1/4/16
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -896,8 +866,8 @@ interface 1/4/16
 interface 1/4/17
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -909,8 +879,8 @@ interface 1/4/17
 interface 1/4/18
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -922,8 +892,8 @@ interface 1/4/18
 interface 1/4/19
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -935,8 +905,8 @@ interface 1/4/19
 interface 1/4/20
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -948,8 +918,8 @@ interface 1/4/20
 interface 1/4/21
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -961,8 +931,8 @@ interface 1/4/21
 interface 1/4/22
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -974,8 +944,8 @@ interface 1/4/22
 interface 1/4/23
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -987,8 +957,8 @@ interface 1/4/23
 interface 1/4/24
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1000,8 +970,8 @@ interface 1/4/24
 interface 1/4/25
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1013,8 +983,8 @@ interface 1/4/25
 interface 1/4/26
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1026,8 +996,8 @@ interface 1/4/26
 interface 1/4/27
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1039,8 +1009,8 @@ interface 1/4/27
 interface 1/4/28
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1052,8 +1022,8 @@ interface 1/4/28
 interface 1/4/29
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1065,8 +1035,8 @@ interface 1/4/29
 interface 1/4/30
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1078,8 +1048,8 @@ interface 1/4/30
 interface 1/4/31
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1091,8 +1061,8 @@ interface 1/4/31
 interface 1/4/32
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1104,8 +1074,8 @@ interface 1/4/32
 interface 1/4/33
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1117,8 +1087,8 @@ interface 1/4/33
 interface 1/4/34
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1130,8 +1100,8 @@ interface 1/4/34
 interface 1/4/35
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1143,8 +1113,8 @@ interface 1/4/35
 interface 1/4/36
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1156,8 +1126,8 @@ interface 1/4/36
 interface 1/4/37
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1169,8 +1139,8 @@ interface 1/4/37
 interface 1/4/38
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1182,8 +1152,8 @@ interface 1/4/38
 interface 1/4/39
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1195,8 +1165,8 @@ interface 1/4/39
 interface 1/4/40
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1208,8 +1178,8 @@ interface 1/4/40
 interface 1/4/41
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1221,8 +1191,8 @@ interface 1/4/41
 interface 1/4/42
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1234,8 +1204,8 @@ interface 1/4/42
 interface 1/4/43
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1247,8 +1217,8 @@ interface 1/4/43
 interface 1/4/44
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1260,8 +1230,8 @@ interface 1/4/44
 interface 1/4/45
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1273,8 +1243,8 @@ interface 1/4/45
 interface 1/4/46
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1286,8 +1256,8 @@ interface 1/4/46
 interface 1/4/47
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1299,8 +1269,8 @@ interface 1/4/47
 interface 1/4/48
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1312,8 +1282,8 @@ interface 1/4/48
 interface 1/5/1
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1325,8 +1295,8 @@ interface 1/5/1
 interface 1/5/2
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1338,8 +1308,8 @@ interface 1/5/2
 interface 1/5/3
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1351,8 +1321,8 @@ interface 1/5/3
 interface 1/5/4
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1364,8 +1334,8 @@ interface 1/5/4
 interface 1/5/5
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1377,8 +1347,8 @@ interface 1/5/5
 interface 1/5/6
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1390,8 +1360,8 @@ interface 1/5/6
 interface 1/5/7
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1403,8 +1373,8 @@ interface 1/5/7
 interface 1/5/8
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1416,8 +1386,8 @@ interface 1/5/8
 interface 1/5/9
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1429,8 +1399,8 @@ interface 1/5/9
 interface 1/5/10
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1442,8 +1412,8 @@ interface 1/5/10
 interface 1/5/11
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1455,8 +1425,8 @@ interface 1/5/11
 interface 1/5/12
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1468,8 +1438,8 @@ interface 1/5/12
 interface 1/5/13
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1481,8 +1451,8 @@ interface 1/5/13
 interface 1/5/14
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1494,8 +1464,8 @@ interface 1/5/14
 interface 1/5/15
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1507,8 +1477,8 @@ interface 1/5/15
 interface 1/5/16
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1520,8 +1490,8 @@ interface 1/5/16
 interface 1/5/17
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1533,8 +1503,8 @@ interface 1/5/17
 interface 1/5/18
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1546,8 +1516,8 @@ interface 1/5/18
 interface 1/5/19
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1559,8 +1529,8 @@ interface 1/5/19
 interface 1/5/20
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1572,8 +1542,8 @@ interface 1/5/20
 interface 1/5/21
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1585,8 +1555,8 @@ interface 1/5/21
 interface 1/5/22
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1598,8 +1568,8 @@ interface 1/5/22
 interface 1/5/23
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1611,8 +1581,8 @@ interface 1/5/23
 interface 1/5/24
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1624,8 +1594,8 @@ interface 1/5/24
 interface 1/5/25
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1637,8 +1607,8 @@ interface 1/5/25
 interface 1/5/26
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1650,8 +1620,8 @@ interface 1/5/26
 interface 1/5/27
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1663,8 +1633,8 @@ interface 1/5/27
 interface 1/5/28
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1676,8 +1646,8 @@ interface 1/5/28
 interface 1/5/29
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1689,8 +1659,8 @@ interface 1/5/29
 interface 1/5/30
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1702,8 +1672,8 @@ interface 1/5/30
 interface 1/5/31
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1715,8 +1685,8 @@ interface 1/5/31
 interface 1/5/32
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1728,8 +1698,8 @@ interface 1/5/32
 interface 1/5/33
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1741,8 +1711,8 @@ interface 1/5/33
 interface 1/5/34
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1754,8 +1724,8 @@ interface 1/5/34
 interface 1/5/35
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1767,8 +1737,8 @@ interface 1/5/35
 interface 1/5/36
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1780,8 +1750,8 @@ interface 1/5/36
 interface 1/5/37
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1793,8 +1763,8 @@ interface 1/5/37
 interface 1/5/38
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1806,8 +1776,8 @@ interface 1/5/38
 interface 1/5/39
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1819,8 +1789,8 @@ interface 1/5/39
 interface 1/5/40
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1832,8 +1802,8 @@ interface 1/5/40
 interface 1/5/41
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1845,8 +1815,8 @@ interface 1/5/41
 interface 1/5/42
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1858,8 +1828,8 @@ interface 1/5/42
 interface 1/5/43
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1871,8 +1841,8 @@ interface 1/5/43
 interface 1/5/44
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1884,8 +1854,8 @@ interface 1/5/44
 interface 1/5/45
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1897,8 +1867,8 @@ interface 1/5/45
 interface 1/5/46
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1910,8 +1880,8 @@ interface 1/5/46
 interface 1/5/47
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1923,8 +1893,8 @@ interface 1/5/47
 interface 1/5/48
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1936,8 +1906,8 @@ interface 1/5/48
 interface 1/6/1
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1949,8 +1919,8 @@ interface 1/6/1
 interface 1/6/2
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1962,8 +1932,8 @@ interface 1/6/2
 interface 1/6/3
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1975,8 +1945,8 @@ interface 1/6/3
 interface 1/6/4
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -1988,8 +1958,8 @@ interface 1/6/4
 interface 1/6/5
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2001,8 +1971,8 @@ interface 1/6/5
 interface 1/6/6
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2014,8 +1984,8 @@ interface 1/6/6
 interface 1/6/7
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2027,8 +1997,8 @@ interface 1/6/7
 interface 1/6/8
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2040,8 +2010,8 @@ interface 1/6/8
 interface 1/6/9
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2053,8 +2023,8 @@ interface 1/6/9
 interface 1/6/10
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2066,8 +2036,8 @@ interface 1/6/10
 interface 1/6/11
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2079,8 +2049,8 @@ interface 1/6/11
 interface 1/6/12
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2092,8 +2062,8 @@ interface 1/6/12
 interface 1/6/13
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2105,8 +2075,8 @@ interface 1/6/13
 interface 1/6/14
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2118,8 +2088,8 @@ interface 1/6/14
 interface 1/6/15
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2131,8 +2101,8 @@ interface 1/6/15
 interface 1/6/16
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2144,8 +2114,8 @@ interface 1/6/16
 interface 1/6/17
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2157,8 +2127,8 @@ interface 1/6/17
 interface 1/6/18
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2170,8 +2140,8 @@ interface 1/6/18
 interface 1/6/19
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2183,8 +2153,8 @@ interface 1/6/19
 interface 1/6/20
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2196,8 +2166,8 @@ interface 1/6/20
 interface 1/6/21
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2209,8 +2179,8 @@ interface 1/6/21
 interface 1/6/22
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2222,8 +2192,8 @@ interface 1/6/22
 interface 1/6/23
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2235,8 +2205,8 @@ interface 1/6/23
 interface 1/6/24
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2248,8 +2218,8 @@ interface 1/6/24
 interface 1/6/25
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2261,8 +2231,8 @@ interface 1/6/25
 interface 1/6/26
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2274,8 +2244,8 @@ interface 1/6/26
 interface 1/6/27
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2287,8 +2257,8 @@ interface 1/6/27
 interface 1/6/28
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2300,8 +2270,8 @@ interface 1/6/28
 interface 1/6/29
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2313,8 +2283,8 @@ interface 1/6/29
 interface 1/6/30
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2326,8 +2296,8 @@ interface 1/6/30
 interface 1/6/31
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2339,8 +2309,8 @@ interface 1/6/31
 interface 1/6/32
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2352,8 +2322,8 @@ interface 1/6/32
 interface 1/6/33
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2365,8 +2335,8 @@ interface 1/6/33
 interface 1/6/34
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2378,8 +2348,8 @@ interface 1/6/34
 interface 1/6/35
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2391,8 +2361,8 @@ interface 1/6/35
 interface 1/6/36
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2404,8 +2374,8 @@ interface 1/6/36
 interface 1/6/37
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2417,8 +2387,8 @@ interface 1/6/37
 interface 1/6/38
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2430,8 +2400,8 @@ interface 1/6/38
 interface 1/6/39
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2443,8 +2413,8 @@ interface 1/6/39
 interface 1/6/40
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2456,8 +2426,8 @@ interface 1/6/40
 interface 1/6/41
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2469,8 +2439,8 @@ interface 1/6/41
 interface 1/6/42
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2482,8 +2452,8 @@ interface 1/6/42
 interface 1/6/43
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2495,8 +2465,8 @@ interface 1/6/43
 interface 1/6/44
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2508,8 +2478,8 @@ interface 1/6/44
 interface 1/6/45
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2521,8 +2491,8 @@ interface 1/6/45
 interface 1/6/46
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2534,8 +2504,8 @@ interface 1/6/46
 interface 1/6/47
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2547,8 +2517,632 @@ interface 1/6/47
 interface 1/6/48
     no shutdown
     no routing
-    vlan trunk native 51
-    vlan trunk allowed 51,100
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/1
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/2
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/3
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/4
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/5
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/6
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/7
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/8
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/9
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/10
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/11
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/12
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/13
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/14
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/15
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/16
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/17
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/18
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/19
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/20
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/21
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/22
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/23
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/24
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/25
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/26
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/27
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/28
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/29
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/30
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/31
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/32
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/33
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/34
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/35
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/36
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/37
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/38
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/39
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/40
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/41
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/42
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/43
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/44
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/45
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/46
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/47
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    spanning-tree root-guard
+    loop-protect
+    loop-protect action tx-rx-disable
+    port-access port-security
+        enable
+        client-limit 3
+interface 1/7/48
+    no shutdown
+    no routing
+    vlan trunk native 2
+    vlan trunk allowed 2,100
     spanning-tree bpdu-guard
     spanning-tree port-type admin-edge
     spanning-tree root-guard
@@ -2561,16 +3155,14 @@ interface vlan 1
     no ip dhcp
 interface vlan 900
     description Management
-    ip address 10.130.64.51/23
+    ip address 10.106.64.5/23
 snmp-server vrf default
 snmp-server trap-source interface vlan900 vrf default
-snmp-server system-description CALLEJOIDF05AS01
-snmp-server system-location CALLEJO-IDF05-Room 231
-snmp-server system-contact DISD TAC - 972.925.5630
-snmpv3 user WANUSER auth sha auth-pass ciphertext AQBapYrwuxqmh2SezZzZrzpUxpH24zzadVftTyNtm0pwqTVUDAAAANXPNjNzNFwWcSXFRA== priv aes priv-pass ciphertext AQBapZh4uV2Fvanl15PPC1CIVG9JJqy/LEQ0F+vQvHymUxdYCwAAAPYH9xDB6GXLvhUI
-snmp-server host 10.1.41.60 trap version v3 user WANUSER
-ip route 0.0.0.0/0 10.130.64.1
-ip dns domain-name dallasisd.org
+snmp-server system-description ARUBACX01
+snmp-server system-location MDF
+snmp-server system-contact xxxx TAC
+ip route 0.0.0.0/0 10.106.64.1
+ip dns domain-name dnsname.com
 ip dns server-address 10.1.232.27
 ip dns server-address 10.2.232.29
 !
@@ -2578,10 +3170,9 @@ ip dns server-address 10.2.232.29
 !
 !
 !
-ip source-interface tacacs 10.130.64.51
-ip source-interface ntp 10.130.64.51
-ip source-interface syslog 10.130.64.51
-ip source-interface dns 10.130.64.51
+ip source-interface tacacs 10.106.64.5
+ip source-interface ntp 10.106.64.5
+ip source-interface syslog 10.106.64.5
+ip source-interface dns 10.106.64.5
 no https-server vrf default
 no https-server vrf mgmt
-CALLEJOIDF05AS01#

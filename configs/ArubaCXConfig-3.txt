@@ -1,11 +1,10 @@
-CALLEJOMDFAS01
+ARUBACX03
 Current configuration:
 !
 !Version ArubaOS-CX FL.10.06.0140
 !export-password: default
-hostname CALLEJOMDFAS01
+hostname ARUBACX03
 banner motd !
-Adelfo Botello Callejo - CALLEJOMDFAS01
 !
 banner exec !
           ********************************************
@@ -24,7 +23,7 @@ banner exec !
           ********************************************
           ********************************************
 !
-user admin group administrators password ciphertext AQBapbDbQsZ/KToClwBPwIMKfuTqugbG6RUcInJjpjfHBJXrYgAAACHEsslLITo2YA6zuuhBRatWHY1utMGqoLs7xC68mTRFcWc7SxpqjuBpK3aeMErqdw4E9FJ2Vmkrr/DzGrevrvcKFMed6r8Oa5MwIJaTywfhWoV7aedIu5in9SdL0phHVBQN
+user admin group administrators password ciphertext [ --REDACTED-- ]
 module 1/3 product-number r0x41a
 module 1/4 product-number r0x38b
 module 1/5 product-number r0x38b
@@ -37,19 +36,19 @@ cli-session
     timeout 5
 !
 !
-tacacs-server key ciphertext AQBapYBuph3lQm1aYLu8shwvEArfrOoOUYS3D8WEWF5RP29fCAAAAKLbmDzoG4sJ
+tacacs-server key ciphertext [ --REDACTED-- ]
 tacacs-server timeout 15
 !
 !
 tacacs-server host 10.1.250.101
 tacacs-server host 10.2.250.101
 !
-aaa group server tacacs disd_tacacs
+aaa group server tacacs xxxx_tacacs
     server 10.1.250.101
     server 10.2.250.101
-aaa authentication login default group disd_tacacs local
-aaa authorization commands default group disd_tacacs tacacs local
-aaa accounting all-mgmt default start-stop group disd_tacacs local
+aaa authentication login default group xxxx_tacacs local
+aaa authorization commands default group xxxx_tacacs tacacs local
+aaa accounting all-mgmt default start-stop group xxxx_tacacs local
 !
 logging 10.2.250.77
 ssh server vrf default
@@ -101,7 +100,6 @@ interface mgmt
 port-access port-security enable
 interface lag 5
     no shutdown
-    description Uplink to CALLEJOMDFCS01
     no routing
     vlan trunk native 999
     vlan trunk allowed 2,100,201,301-302,501,900
@@ -2496,13 +2494,10 @@ interface vlan 900
     ip address 10.130.64.5/23
 snmp-server vrf default
 snmp-server trap-source interface vlan900 vrf default
-snmp-server system-description CALLEJOMDFAS01
-snmp-server system-location CALLEJO-MDF-Room 100
-snmp-server system-contact DISD TAC - 972.925.5630
-snmpv3 user WANUSER auth sha auth-pass ciphertext AQBapYrwuxqmh2SezZzZrzpUxpH24zzadVftTyNtm0pwqTVUDAAAANXPNjNzNFwWcSXFRA== priv aes priv-pass ciphertext AQBapZh4uV2Fvanl15PPC1CIVG9JJqy/LEQ0F+vQvHymUxdYCwAAAPYH9xDB6GXLvhUI
-snmp-server host 10.1.41.60 trap version v3 user WANUSER
+snmp-server system-description ARUBACX03
+snmp-server system-contact xxxx TAC - 972.925.5630
 ip route 0.0.0.0/0 10.130.64.1
-ip dns domain-name dallasisd.org
+ip dns domain-name dnsname.com
 ip dns server-address 10.1.232.27
 ip dns server-address 10.2.232.29
 !
@@ -2516,4 +2511,4 @@ ip source-interface syslog 10.130.64.5
 ip source-interface dns 10.130.64.5
 no https-server vrf default
 no https-server vrf mgmt
-CALLEJOMDFAS01#
+ARUBACX03#
