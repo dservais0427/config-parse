@@ -6,7 +6,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '1.0'
+__version__ = '0.1.1'
 
 import csv
 import os
@@ -183,6 +183,9 @@ for intf_cmd in intf_cmds:
     for cmd in intf_cmd.re_search_children(r"^\schannel-group"):
         exCmd.append(cmd.text.strip())
 
+    for cmd in intf_cmd.re_search_children(r'^\spower\sinline+'):
+        exCmd.append(cmd.text.strip())
+
     for cmd in intf_cmd.re_search_children(r'^\sudld+'):
         exCmd.append(cmd.text.strip())
 
@@ -232,7 +235,7 @@ for intf_cmd in intf_cmds:
 # Output data to CSV file
 with open(outfile, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, dialect='excel')
-    writer.writerow(['Interface', 'Switch', 'New Interface', 'Type',
+    writer.writerow(['Interface', 'Switch Name', 'New Interface', 'Type',
                      'Description', 'Access/Native', 'Voice/Allowed',
                      'Speed/Duplex', 'Shutdown', 'Commands', 'STP',
                      'QOS', 'Routing', 'Port Security'])
