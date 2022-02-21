@@ -5,7 +5,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '1.0'
+__version__ = '0.1.1'
 
 import csv
 import os
@@ -161,7 +161,7 @@ for interface_cmd in interface_cmds:
 # Output data to CSV file
 with open(outfile, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, dialect='excel')
-    writer.writerow(['Interface', 'Switch', 'New Interface', 'Type',
+    writer.writerow(['Interface', 'Switch Name', 'New Interface', 'Type',
                      'Description', 'Access/Native', 'Voice/Allowed',
                      'Shutdown', 'Speed/Duplex', 'Commands', 'STP',
                      'QOS', 'Port Security'])
