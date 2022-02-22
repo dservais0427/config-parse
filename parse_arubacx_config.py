@@ -125,7 +125,7 @@ for intf_cmd in interface_cmds:
 
     # search for the description command
     for cmd in intf_cmd.re_search_children(r'^\s+description'):
-        intDesc = cmd.text.strip()
+        intDesc = cmd.text.strip()[12:]
 
         # determine if this is a trunk or access port and capture specific info
     for cmd in intf_cmd.re_search_children(RE_PTYPE):
@@ -169,6 +169,9 @@ for intf_cmd in interface_cmds:
 
     for cmd in intf_cmd.re_search_children(r'^\s+spanning-tree'):
         stpCmd.append(cmd.text.strip())
+
+    for cmd in intf_cmd.re_search_children(r'^\s+loop-protect+'):
+        exCmd.append(cmd.text.strip())
 
     for cmd in intf_cmd.re_search_children(r'^\s+ip\sospf'):
         rtrCmd.append(cmd.text.strip())

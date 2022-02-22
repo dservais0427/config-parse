@@ -131,7 +131,7 @@ for intf_cmd in intf_cmds:
 
     # search for the description command
     for cmd in intf_cmd.re_search_children(r"^\sdescription"):
-        intDesc = cmd.text.strip()
+        intDesc = cmd.text.strip()[12:]
 
     #  intf_name.startswith('lo'):
     if re.match(r'[L|l]oopback', intf_name) is not None:

@@ -119,7 +119,7 @@ for interface_cmd in interface_cmds:
 
     # search for the description command
     for cmd in interface_cmd.re_search_children(r'^\s+name'):
-        intf.insert(3, cmd.text.strip())
+        intf.insert(3, cmd.text.strip()[5:].strip('"'))
 
     for cmd in interface_cmd.re_search_children(r'^\s+untagged'):
         intf.insert(4, cmd.text.strip())
