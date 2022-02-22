@@ -120,7 +120,7 @@ for interface_cmd in interface_cmds:
 
     # search for the description command
     for cmd in interface_cmd.re_search_children(r'^\sdescription'):
-        intf.insert(3, cmd.text.strip())
+        intf.insert(3, cmd.text.strip()[12:])
 
     # determine if this is a trunk or access port and capture specific info
     for cmd in interface_cmd.re_search_children(r'^\sport\slink-type'):
