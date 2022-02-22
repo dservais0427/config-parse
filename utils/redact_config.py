@@ -5,7 +5,7 @@ configuration files.
 """
 
 __author__ = 'David Servais'
-__version__ = '1.0'
+__version__ = '0.1.1'
 
 import os
 import sys
@@ -18,7 +18,7 @@ except ImportError:
     import tkinter as tk
 from tkinter import filedialog as fd
 
-regx = r'(.*ciphertext\s|.*key\s[057]\s|.*community\s|.*password\s[057]\s|.*md5\s[057]\s|.*secret\s[057]\s|.*key\s|.*password\scipher\s|.*encrypted-key\s)(\S+)(.*)'
+regx = r'(.*ciphertext\s|.*key\s[057]\s|.*community\s|.*password\s[057]\s|.*md5\s[057]\s|.*secret\s[057]\s|.*key\s|.*password\scipher\s|.*encrypted-key\s|.*hash\s)(\S+)(.*)'
 
 if '--noview' in sys.argv:
     fOpen = False
