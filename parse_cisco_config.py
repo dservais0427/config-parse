@@ -180,7 +180,7 @@ for intf_cmd in intf_cmds:
         exCmd.append(cmd.text.strip())
 
     # Process additional commands
-    for cmd in intf_cmd.re_search_children(r"^\schannel-group"):
+    for cmd in intf_cmd.re_search_children(r'^\schannel-group+'):
         exCmd.append(cmd.text.strip())
 
     for cmd in intf_cmd.re_search_children(r'^\spower\sinline+'):
