@@ -42,6 +42,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Project working files
 configs/*_redacted.txt
-vlanmap.txt
+output/
 vlanmap.txt
