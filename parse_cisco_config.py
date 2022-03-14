@@ -11,6 +11,7 @@ __version__ = '0.1.1'
 import csv
 import os
 import re
+
 try:
     from ciscoconfparse import CiscoConfParse
 except ImportError:
@@ -109,7 +110,8 @@ confparse = CiscoConfParse(config)
 
 hostname = confparse.re_match_iter_typed(RE_HOSTNAME)
 outfile = hostname.upper() + '_interfaces.csv'
-outfile = Path(os.environ['TEMP'], outfile)
+# outfile = Path(os.environ['TEMP'], outfile)
+outfile = Path('output', outfile)
 
 intf_all = []
 
