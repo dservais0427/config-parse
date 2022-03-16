@@ -49,7 +49,8 @@ args = parser.parse_args()
 if args.config is None:
     root = tk.Tk()
     root.withdraw()
-    config = fd.askopenfilename(title='Select Router Configuration File')
+    # config = fd.askopenfilename(title='Select Router Configuration File')
+    config = fd.askopenfilenames(title='Select Router Configuration File')
     if config == '':
         exit()
 else:
@@ -105,147 +106,152 @@ if os.path.exists('vlanmap.txt'):
 else:
     checkVlan = False
 
-# Begin processing
-confparse = CiscoConfParse(config)
+# Create loop to handle multiple config files
+#
+file_list = list(config)
 
-hostname = confparse.re_match_iter_typed(RE_HOSTNAME)
-outfile = hostname.upper() + '_interfaces.csv'
-# outfile = Path(os.environ['TEMP'], outfile)
-outfile = Path('output', outfile)
+for x in file_list:
+    # Begin processing
+    confparse = CiscoConfParse(x)
 
-intf_all = []
+    hostname = confparse.re_match_iter_typed(RE_HOSTNAME)
+    outfile = hostname.upper() + '_interfaces.csv'
+    # outfile = Path(os.environ['TEMP'], outfile)
+    outfile = Path('output', outfile)
 
-# extract thce interface details from config file
-# get all ethernet interfaces from the configuration file
-intf_cmds = confparse.find_objects(RE_INTERFACE)
+    intf_all = []
 
-# iterate over the resulting IOSCfgLine objects and parse out desired info
-for intf_cmd in intf_cmds:
-    # Clear loop variables
-    intf = ['', '', '', '', '', '', '', '', '', '', '']
-    intShut, vlAllow, vlAccess, intDesc = '', '', '', ''
-    vlanCmd, exCmd, stpCmd, portsecCmd = [], [], [], []
-    sdplxCmd, qosCmd, ipCmd, rtrCmd = [], [], [], []
+    # extract thce interface details from config file
+    # get all ethernet interfaces from the configuration file
+    intf_cmds = confparse.find_objects(RE_INTERFACE)
 
-    # get the interface name
-    intf_name = intf_cmd.text[len("interface "):]
-    intf.insert(0, intf_name)
+    # iterate over the resulting IOSCfgLine objects and parse out desired info
+    for intf_cmd in intf_cmds:
+        # Clear loop variables
+        intf = ['', '', '', '', '', '', '', '', '', '', '']
+        intShut, vlAllow, vlAccess, intDesc = '', '', '', ''
+        vlanCmd, exCmd, stpCmd, portsecCmd = [], [], [], []
+        sdplxCmd, qosCmd, ipCmd, rtrCmd = [], [], [], []
 
-    # search for the description command
-    for cmd in intf_cmd.re_search_children(r"^\sdescription"):
-        intDesc = cmd.text.strip()[12:]
+        # get the interface name
+        intf_name = intf_cmd.text[len("interface "):]
+        intf.insert(0, intf_name)
 
-    #  intf_name.startswith('lo'):
-    if re.match(r'[L|l]oopback', intf_name) is not None:
-        for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
-            ipCmd.append(cmd1.text.strip())
-        vlAccess = ','.join(ipCmd)
+        # search for the description command
+        for cmd in intf_cmd.re_search_children(r"^\sdescription"):
+            intDesc = cmd.text.strip()[12:]
 
-    # determine if this is a trunk or access port and capture specific info
-    for cmd in intf_cmd.re_search_children(RE_PTYPE):
-
-        if cmd.text == ' switchport mode access':
-            for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
-                vlAccess = cmd1.text.strip()
-
-            for cmd2 in intf_cmd.re_search_children(RE_SWVOICE):
-                vlAllow = cmd2.text.strip()
-
-        elif cmd.text == ' switchport mode trunk':
-            for cmd1 in intf_cmd.re_search_children(RE_SWNATIVE):
-                vlAccess = cmd1.text.strip()
-
-            for cmd2 in intf_cmd.re_search_children(RE_SWTRUNK):
-                vlanCmd.append(cmd2.text.strip())
-
-            if len(vlanCmd) > 1:
-                vlanStr = 'switchport trunk allowed vlan ' \
-                    + vlanCmd[0].split()[-1]
-                for x in range(1, len(vlanCmd)):
-                    vlanStr += ',' + vlanCmd[x].split()[-1]
-                vlAllow = vlanStr
-            else:
-                vlAllow = ','.join(vlanCmd)
-
-        else:
+        #  intf_name.startswith('lo'):
+        if re.match(r'[L|l]oopback', intf_name) is not None:
             for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
                 ipCmd.append(cmd1.text.strip())
             vlAccess = ','.join(ipCmd)
 
-    for cmd in intf_cmd.re_search_children(r"^\sshutdown"):
-        intShut = cmd.text.strip()
+        # determine if this is a trunk or access port and capture specific info
+        for cmd in intf_cmd.re_search_children(RE_PTYPE):
 
-    for cmd in intf_cmd.re_search_children(r"^\sspeed|^\sduplex"):
-        sdplxCmd.append(cmd.text.strip())
+            if cmd.text == ' switchport mode access':
+                for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
+                    vlAccess = cmd1.text.strip()
 
-    for cmd in intf_cmd.re_search_children(r"^\sswitchport\snonegotiate"):
-        exCmd.append(cmd.text.strip())
+                for cmd2 in intf_cmd.re_search_children(RE_SWVOICE):
+                    vlAllow = cmd2.text.strip()
 
-    # Process additional commands
-    for cmd in intf_cmd.re_search_children(r'^\schannel-group+'):
-        exCmd.append(cmd.text.strip())
+            elif cmd.text == ' switchport mode trunk':
+                for cmd1 in intf_cmd.re_search_children(RE_SWNATIVE):
+                    vlAccess = cmd1.text.strip()
 
-    for cmd in intf_cmd.re_search_children(r'^\spower\sinline+'):
-        exCmd.append(cmd.text.strip())
+                for cmd2 in intf_cmd.re_search_children(RE_SWTRUNK):
+                    vlanCmd.append(cmd2.text.strip())
 
-    for cmd in intf_cmd.re_search_children(r'^\sudld+'):
-        exCmd.append(cmd.text.strip())
+                if len(vlanCmd) > 1:
+                    vlanStr = 'switchport trunk allowed vlan ' \
+                        + vlanCmd[0].split()[-1]
+                    for x in range(1, len(vlanCmd)):
+                        vlanStr += ',' + vlanCmd[x].split()[-1]
+                    vlAllow = vlanStr
+                else:
+                    vlAllow = ','.join(vlanCmd)
 
-    for cmd in intf_cmd.re_search_children(r'^\saccess-group'):
-        exCmd.append(cmd.text.strip())
+            else:
+                for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
+                    ipCmd.append(cmd1.text.strip())
+                vlAccess = ','.join(ipCmd)
 
-    for cmd in intf_cmd.re_search_children(r'^\sip\sdhcp'):
-        exCmd.append(cmd.text.strip())
+        for cmd in intf_cmd.re_search_children(r"^\sshutdown"):
+            intShut = cmd.text.strip()
 
-    for cmd in intf_cmd.re_search_children(r'^\sspanning-tree'):
-        stpCmd.append(cmd.text.strip())
+        for cmd in intf_cmd.re_search_children(r"^\sspeed|^\sduplex"):
+            sdplxCmd.append(cmd.text.strip())
 
-    for cmd in intf_cmd.re_search_children(r'^\sswitchport\sport-security+'):
-        portsecCmd.append(cmd.text.strip())
+        for cmd in intf_cmd.re_search_children(r"^\sswitchport\snonegotiate"):
+            exCmd.append(cmd.text.strip())
 
-    # Process routing commands
-    for cmd in intf_cmd.re_search_children(r'^\sip\s(eigrp|ospf)'):
-        rtrCmd.append(cmd.text.strip())
+        # Process additional commands
+        for cmd in intf_cmd.re_search_children(r'^\schannel-group+'):
+            exCmd.append(cmd.text.strip())
 
-    # Process IGMP commands
-    for cmd in intf_cmd.re_search_children(r'^\sip\spim'):
-        exCmd.append(cmd.text.strip())
+        for cmd in intf_cmd.re_search_children(r'^\spower\sinline+'):
+            exCmd.append(cmd.text.strip())
 
-    # Process AutoQOS commands
-    for cmd in intf_cmd.re_search_children(r'^(\sauto|^\smls)\sqos'):
-        qosCmd.append(cmd.text.strip())
+        for cmd in intf_cmd.re_search_children(r'^\sudld+'):
+            exCmd.append(cmd.text.strip())
 
-    for cmd in intf_cmd.re_search_children(r'^\strust\sdevice'):
-        qosCmd.append(cmd.text.strip())
+        for cmd in intf_cmd.re_search_children(r'^\saccess-group'):
+            exCmd.append(cmd.text.strip())
 
-    intf.insert(2, checkKey(vlans, vlAccess))
-    intf.insert(3, intDesc)
-    intf.insert(4, vlAccess)
-    intf.insert(5, vlAllow)
-    intf.insert(6, ','.join(sdplxCmd))
-    intf.insert(7, intShut)
-    intf.insert(8, ','.join(exCmd))
-    intf.insert(9, ','.join(stpCmd))
-    intf.insert(10, ','.join(qosCmd))
-    intf.insert(11, ','.join(rtrCmd))
-    intf.insert(12, ','.join(portsecCmd))
+        for cmd in intf_cmd.re_search_children(r'^\sip\sdhcp'):
+            exCmd.append(cmd.text.strip())
 
-    # add interface info to the all interface list
-    intf_all.append(intf)
+        for cmd in intf_cmd.re_search_children(r'^\sspanning-tree'):
+            stpCmd.append(cmd.text.strip())
+
+        for cmd in intf_cmd.re_search_children(r'^\sswitchport\sport-security+'):
+            portsecCmd.append(cmd.text.strip())
+
+        # Process routing commands
+        for cmd in intf_cmd.re_search_children(r'^\sip\s(eigrp|ospf)'):
+            rtrCmd.append(cmd.text.strip())
+
+        # Process IGMP commands
+        for cmd in intf_cmd.re_search_children(r'^\sip\spim'):
+            exCmd.append(cmd.text.strip())
+
+        # Process AutoQOS commands
+        for cmd in intf_cmd.re_search_children(r'^(\sauto|^\smls)\sqos'):
+            qosCmd.append(cmd.text.strip())
+
+        for cmd in intf_cmd.re_search_children(r'^\strust\sdevice'):
+            qosCmd.append(cmd.text.strip())
+
+        intf.insert(2, checkKey(vlans, vlAccess))
+        intf.insert(3, intDesc)
+        intf.insert(4, vlAccess)
+        intf.insert(5, vlAllow)
+        intf.insert(6, ','.join(sdplxCmd))
+        intf.insert(7, intShut)
+        intf.insert(8, ','.join(exCmd))
+        intf.insert(9, ','.join(stpCmd))
+        intf.insert(10, ','.join(qosCmd))
+        intf.insert(11, ','.join(rtrCmd))
+        intf.insert(12, ','.join(portsecCmd))
+
+        # add interface info to the all interface list
+        intf_all.append(intf)
 
 
-# Output data to CSV file
-with open(outfile, 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile, dialect='excel')
-    writer.writerow(['Interface', 'Switch Name', 'New Interface', 'Type',
-                     'Description', 'Access/Native', 'Voice/Allowed',
-                     'Speed/Duplex', 'Shutdown', 'Commands', 'STP',
-                     'QOS', 'Routing', 'Port Security'])
+    # Output data to CSV file
+    with open(outfile, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, dialect='excel')
+        writer.writerow(['Interface', 'Switch Name', 'New Interface', 'Type',
+                         'Description', 'Access/Native', 'Voice/Allowed',
+                         'Speed/Duplex', 'Shutdown', 'Commands', 'STP',
+                         'QOS', 'Routing', 'Port Security'])
 
-    for x in intf_all:
-        writer.writerow([x[0], '', x[1], checkKey(vlans, x[4].strip()),
-                         x[3], x[4], x[5], x[6], x[7], x[8], x[9],
-                         x[10], x[11], x[12], x[13], x[14]])
+        for x in intf_all:
+            writer.writerow([x[0], '', x[1], checkKey(vlans, x[4].strip()),
+                             x[3], x[4], x[5], x[6], x[7], x[8], x[9],
+                             x[10], x[11], x[12], x[13], x[14]])
 
-# open csv file for review
-os.startfile(outfile)
+    # open csv file for review
+    os.startfile(outfile)
