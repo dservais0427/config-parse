@@ -47,3 +47,4 @@ Temporary Items
 configs/*_redacted.txt
 output/
 vlanmap.txt
+*.pyc
