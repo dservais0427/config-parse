@@ -1,0 +1,524 @@
+Running configuration:
+
+; JL074A Configuration Editor; Created on release #KB.16.04.0008
+; Ver #10:9b.7f.bf.bb.ff.7c.59.fc.7b.ff.ff.fc.ff.ff.3f.ef:81
+
+hostname "ARUBAOS02"
+module 1 type jl074x
+module 2 type jl074y
+flexible-module A type JL083A
+console idle-timeout 300
+console idle-timeout serial-usb 300
+time timezone -300
+spanning-tree 1 bpdu-protection
+spanning-tree 2 bpdu-protection
+spanning-tree 3 bpdu-protection
+spanning-tree 4 bpdu-protection
+spanning-tree 5 bpdu-protection
+spanning-tree 6 bpdu-protection
+spanning-tree 7 bpdu-protection
+spanning-tree 8 bpdu-protection
+spanning-tree 9 bpdu-protection
+spanning-tree 10 bpdu-protection
+spanning-tree 11 bpdu-protection
+spanning-tree 12 bpdu-protection
+spanning-tree 13 bpdu-protection
+spanning-tree 14 bpdu-protection
+spanning-tree 15 bpdu-protection
+spanning-tree 16 bpdu-protection
+spanning-tree 17 bpdu-protection
+spanning-tree 18 bpdu-protection
+spanning-tree 19 bpdu-protection
+spanning-tree 20 bpdu-protection
+spanning-tree 21 bpdu-protection
+spanning-tree 22 bpdu-protection
+spanning-tree 23 bpdu-protection
+spanning-tree 24 bpdu-protection
+spanning-tree 25 bpdu-protection
+spanning-tree 26 bpdu-protection
+spanning-tree 27 bpdu-protection
+spanning-tree 28 bpdu-protection
+spanning-tree 29 bpdu-protection
+spanning-tree 30 bpdu-protection
+spanning-tree 31 bpdu-protection
+spanning-tree 32 bpdu-protection
+spanning-tree 33 bpdu-protection
+spanning-tree 34 bpdu-protection
+spanning-tree 35 bpdu-protection
+spanning-tree 36 bpdu-protection
+spanning-tree 37 bpdu-protection
+spanning-tree 38 bpdu-protection
+spanning-tree 39 bpdu-protection
+spanning-tree 40 bpdu-protection
+spanning-tree 41 bpdu-protection
+spanning-tree 42 bpdu-protection
+spanning-tree 43 bpdu-protection
+spanning-tree 44 bpdu-protection
+spanning-tree 45 bpdu-protection
+spanning-tree 46 bpdu-protection
+spanning-tree 47 bpdu-protection
+spanning-tree 48 bpdu-protection
+ip access-list standard "SNMP_Managers"
+   exit
+ip default-gateway 10.81.128.1
+ip dns domain-name "dnsname.com"
+ip dns server-address priority 1 10.1.21.80
+ip dns server-address priority 2 10.2.21.84
+timesync sntp
+sntp unicast
+sntp server priority 1 10.2.50.50
+tacacs-server host 10.1.250.101 key [ --REDACTED-- ]
+tacacs-server host 10.2.250.101 key [ --REDACTED-- ]
+tacacs-server timeout 15
+snmp-server community [ --REDACTED-- ] unrestricted
+snmp-server community [ --REDACTED-- ] operator
+snmp-server community [ --REDACTED-- ] operator unrestricted
+snmp-server host 10.1.41.60 community [ --REDACTED-- ]
+snmp-server host 10.1.41.172 community [ --REDACTED-- ]
+snmp-server response-source 10.81.129.201
+port-security 1 learn-mode limited-continuous
+port-security 1 address-limit 3
+port-security 2 learn-mode limited-continuous
+port-security 2 address-limit 3
+port-security 3 learn-mode limited-continuous
+port-security 3 address-limit 3
+port-security 4 learn-mode limited-continuous
+port-security 4 address-limit 3
+port-security 5 learn-mode limited-continuous
+port-security 5 address-limit 3
+port-security 6 learn-mode limited-continuous
+port-security 6 address-limit 3
+port-security 7 learn-mode limited-continuous
+port-security 7 address-limit 3
+port-security 8 learn-mode limited-continuous
+port-security 8 address-limit 3
+port-security 9 learn-mode limited-continuous
+port-security 9 address-limit 3
+port-security 10 learn-mode limited-continuous
+port-security 10 address-limit 3
+port-security 11 learn-mode limited-continuous
+port-security 11 address-limit 3
+port-security 12 learn-mode limited-continuous
+port-security 12 address-limit 3
+port-security 13 learn-mode limited-continuous
+port-security 13 address-limit 3
+port-security 14 learn-mode limited-continuous
+port-security 14 address-limit 3
+port-security 15 learn-mode limited-continuous
+port-security 15 address-limit 3
+port-security 16 learn-mode limited-continuous
+port-security 16 address-limit 3
+port-security 17 learn-mode limited-continuous
+port-security 17 address-limit 3
+port-security 18 learn-mode limited-continuous
+port-security 18 address-limit 3
+port-security 19 learn-mode limited-continuous
+port-security 19 address-limit 3
+port-security 20 learn-mode limited-continuous
+port-security 20 address-limit 3
+port-security 21 learn-mode limited-continuous
+port-security 21 address-limit 3
+port-security 22 learn-mode limited-continuous
+port-security 22 address-limit 3
+port-security 23 learn-mode limited-continuous
+port-security 23 address-limit 3
+port-security 24 learn-mode limited-continuous
+port-security 24 address-limit 3
+port-security 25 learn-mode limited-continuous
+port-security 25 address-limit 3
+port-security 26 learn-mode limited-continuous
+port-security 26 address-limit 3
+port-security 27 learn-mode limited-continuous
+port-security 27 address-limit 3
+port-security 28 learn-mode limited-continuous
+port-security 28 address-limit 3
+port-security 29 learn-mode limited-continuous
+port-security 29 address-limit 3
+port-security 30 learn-mode limited-continuous
+port-security 30 address-limit 3
+port-security 31 learn-mode limited-continuous
+port-security 31 address-limit 3
+port-security 32 learn-mode limited-continuous
+port-security 32 address-limit 3
+port-security 33 learn-mode limited-continuous
+port-security 33 address-limit 3
+port-security 34 learn-mode limited-continuous
+port-security 34 address-limit 3
+port-security 35 learn-mode limited-continuous
+port-security 35 address-limit 3
+port-security 36 learn-mode limited-continuous
+port-security 36 address-limit 3
+port-security 37 learn-mode limited-continuous
+port-security 37 address-limit 3
+port-security 38 learn-mode limited-continuous
+port-security 38 address-limit 3
+port-security 39 learn-mode limited-continuous
+port-security 39 address-limit 3
+port-security 40 learn-mode limited-continuous
+port-security 40 address-limit 3
+port-security 41 learn-mode limited-continuous
+port-security 41 address-limit 3
+port-security 42 learn-mode limited-continuous
+port-security 42 address-limit 3
+port-security 43 learn-mode limited-continuous
+port-security 43 address-limit 3
+port-security 44 learn-mode limited-continuous
+port-security 44 address-limit 3
+port-security 45 learn-mode limited-continuous
+port-security 45 address-limit 3
+port-security 46 learn-mode limited-continuous
+port-security 46 address-limit 3
+port-security 47 learn-mode limited-continuous
+port-security 47 address-limit 3
+port-security 48 learn-mode limited-continuous
+port-security 48 address-limit 3
+interface 1
+   tagged vlan 100
+   untagged vlan 999
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 2
+   tagged vlan 100
+   untagged vlan 2
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 3
+   tagged vlan 100
+   untagged vlan 900
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 4
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 5
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 6
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 7
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 8
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 9
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 10
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 11
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 12
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 13
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 14
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 15
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 16
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 17
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 18
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 19
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 20
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 21
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 22
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 23
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 24
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 25
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 26
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 27
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 28
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 29
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 30
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 31
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 32
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 33
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 34
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 35
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 36
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 37
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 38
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 39
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 40
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 41
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 42
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 43
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 44
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 45
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 46
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 47
+   tagged vlan 100
+   untagged vlan 401
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface 48
+   disable
+   name "OLD_AP"
+   tagged vlan 100
+   untagged vlan 301
+   port-security learn-mode limited-continuous address-limit 3
+   spanning-tree bpdu-protection
+   exit
+interface A1
+   tagged vlan 100,401,900
+   untagged vlan 1
+   exit
+interface A2
+   untagged vlan 1
+   exit
+interface A3
+   untagged vlan 1
+   exit
+interface A4
+   untagged vlan 1
+   exit
+vlan 1
+   name "DEFAULT_VLAN"
+   no untagged 1-48
+   untagged A1-A4
+   ip address dhcp-bootp
+   exit
+vlan 100
+   name "VLAN100"
+   tagged 1-48,A1
+   no ip address
+   voice
+   exit
+vlan 401
+   name "VLAN401"
+   untagged 1-48
+   tagged A1
+   no ip address
+   exit
+vlan 900
+   name "MANAGEMENT_VLAN"
+   tagged A1
+   ip address 10.81.129.201 255.255.254.0
+   exit
+logging 10.2.250.77
+no telnet-server
+snmpv3 enable
+snmpv3 only
+snmpv3 restricted-access
+snmpv3 group managerpriv user "WANUSER" sec-model ver3
+snmpv3 user "WANUSER"
+snmpv3 user "initial"
+aaa authentication login privilege-mode
+aaa authentication console login tacacs
+aaa authentication console enable tacacs
+aaa authentication telnet login tacacs
+aaa authentication telnet enable tacacs
+aaa authentication ssh login tacacs
+aaa authentication ssh enable tacacs
+oobm
+   ip address dhcp-bootp
+   exit
+no tftp server
+no autorun
+no dhcp config-file-update
+no dhcp image-file-update
+password manager
+password operator
