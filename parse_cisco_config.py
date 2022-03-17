@@ -6,7 +6,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 import csv
 import os
@@ -49,7 +49,6 @@ args = parser.parse_args()
 if args.config is None:
     root = tk.Tk()
     root.withdraw()
-    # config = fd.askopenfilename(title='Select Router Configuration File')
     config = fd.askopenfilenames(title='Select Router Configuration File')
     if config == '':
         exit()
