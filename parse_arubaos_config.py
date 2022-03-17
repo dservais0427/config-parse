@@ -5,7 +5,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 import csv
 import os
@@ -47,7 +47,7 @@ args = parser.parse_args()
 if args.config is None:
     root = tk.Tk()
     root.withdraw()
-    config = fd.askopenfilename(title='Select Router Configuration File')
+    config = fd.askopenfilenames(title='Select Router Configuration File')
     if config == '':
         exit()
 else:
@@ -93,79 +93,81 @@ if os.path.exists('vlanmap.txt'):
 else:
     checkVlan = False
 
+file_list = list(config)
 
-confparse = CiscoConfParse(config)
+for x in file_list:
+    # Begin processing
+    confparse = CiscoConfParse(x)
 
-hostname = confparse.re_match_iter_typed(r'^hostname\s+(\S+)')
-hostname = hostname.strip('"')
-outfile = hostname.upper() + '_interfaces.csv'
-outfile = Path(os.environ['TEMP'], outfile)
+    hostname = confparse.re_match_iter_typed(r'^hostname\s+(\S+)')
+    hostname = hostname.strip('"')
+    outfile = hostname.upper() + '_interfaces.csv'
+    outfile = Path(os.environ['TEMP'], outfile)
 
-intf_all = []
+    intf_all = []
 
-# extract the interface details from config file
-# get all ethernet interfaces from the configuration file
-interface_cmds = confparse.find_objects(r'^interface\s+(\S+)')
+    # extract the interface details from config file
+    # get all ethernet interfaces from the configuration file
+    interface_cmds = confparse.find_objects(r'^interface\s+(\S+)')
 
-# iterate over the resulting IOSCfgLine objects and parse out desired info
-for interface_cmd in interface_cmds:
-    intf = ['', '', '', '', '', '', '', '', '', '', '']
-    exCmd, stpCmd, portsecCmd, sdplxCmd, qosCmd = [], [], [], [], []
-    intShut = ''
+    # iterate over the resulting IOSCfgLine objects and parse out desired info
+    for interface_cmd in interface_cmds:
+        intf = ['', '', '', '', '', '', '', '', '', '', '']
+        exCmd, stpCmd, portsecCmd, sdplxCmd, qosCmd = [], [], [], [], []
+        intShut = ''
 
-    # get the interface name
-    intf_name = interface_cmd.text[len('interface '):]
-    intf.insert(0, interface_cmd.text.strip())
+        # get the interface name
+        intf_name = interface_cmd.text[len('interface '):]
+        intf.insert(0, interface_cmd.text.strip())
 
-    # search for the description command
-    for cmd in interface_cmd.re_search_children(r'^\s+name'):
-        intf.insert(3, cmd.text.strip()[5:].strip('"'))
+        # search for the description command
+        for cmd in interface_cmd.re_search_children(r'^\s+name'):
+            intf.insert(3, cmd.text.strip()[5:].strip('"'))
 
-    for cmd in interface_cmd.re_search_children(r'^\s+untagged'):
-        intf.insert(4, cmd.text.strip())
+        for cmd in interface_cmd.re_search_children(r'^\s+untagged'):
+            intf.insert(4, cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s+tagged'):
-        intf.insert(5, cmd.text.strip())
+        for cmd in interface_cmd.re_search_children(r'^\s+tagged'):
+            intf.insert(5, cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s+speed|^\s+duplex'):
-        sdplxCmd.append(cmd.text.strip())
+        for cmd in interface_cmd.re_search_children(r'^\s+speed|^\s+duplex'):
+            sdplxCmd.append(cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s+disable'):
-        intShut = cmd.text.strip()
+        for cmd in interface_cmd.re_search_children(r'^\s+disable'):
+            intShut = cmd.text.strip()
 
-    for cmd in interface_cmd.re_search_children(r'^\s+dhcp'):
-        exCmd.append(cmd.text.strip())
+        for cmd in interface_cmd.re_search_children(r'^\s+dhcp'):
+            exCmd.append(cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s+spanning-tree'):
-        # intf.insert(8, cmd.text.strip())
-        stpCmd.append(cmd.text.strip())
+        for cmd in interface_cmd.re_search_children(r'^\s+spanning-tree'):
+            # intf.insert(8, cmd.text.strip())
+            stpCmd.append(cmd.text.strip())
 
-    for cmd in interface_cmd.re_search_children(r'^\s+port-security+'):
-        # intf.insert(8, cmd.text.strip())
-        portsecCmd.append(cmd.text.strip())
+        for cmd in interface_cmd.re_search_children(r'^\s+port-security+'):
+            # intf.insert(8, cmd.text.strip())
+            portsecCmd.append(cmd.text.strip())
 
-    intf.insert(6, ','.join(sdplxCmd))
-    intf.insert(7, intShut)
-    intf.insert(8, ','.join(exCmd))
-    intf.insert(9, ','.join(stpCmd))
-    intf.insert(10, ','.join(qosCmd))
-    intf.insert(11, ','.join(portsecCmd))
+        intf.insert(6, ','.join(sdplxCmd))
+        intf.insert(7, intShut)
+        intf.insert(8, ','.join(exCmd))
+        intf.insert(9, ','.join(stpCmd))
+        intf.insert(10, ','.join(qosCmd))
+        intf.insert(11, ','.join(portsecCmd))
 
-    # add interface info to the all interface list
-    intf_all.append(intf)
+        # add interface info to the all interface list
+        intf_all.append(intf)
 
+    # Output data to CSV file
+    with open(outfile, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, dialect='excel')
+        writer.writerow(['Interface', 'Switch Name', 'New Interface', 'Type',
+                         'Description', 'Access/Native', 'Voice/Allowed',
+                         'Speed/Duplex', 'Shutdown', 'Commands', 'STP',
+                         'QOS', 'Port Security'])
 
-# Output data to CSV file
-with open(outfile, 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile, dialect='excel')
-    writer.writerow(['Interface', 'Switch Name', 'New Interface', 'Type',
-                     'Description', 'Access/Native', 'Voice/Allowed',
-                     'Speed/Duplex', 'Shutdown', 'Commands', 'STP',
-                     'QOS', 'Port Security'])
+        for x in intf_all:
+            writer.writerow([x[0], '', x[1], checkKey(vlans, x[4]), x[3], x[4],
+                             x[5], x[6], x[7], x[8], x[9], x[10], x[11]])
 
-    for x in intf_all:
-        writer.writerow([x[0], '', x[1], checkKey(vlans, x[4]), x[3], x[4],
-                         x[5], x[6], x[7], x[8], x[9], x[10], x[11]])
-
-# open csv file for review
-os.startfile(outfile)
+    # open csv file for review
+    os.startfile(outfile)
