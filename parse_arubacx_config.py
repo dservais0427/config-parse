@@ -109,7 +109,7 @@ for x in file_list:
 
     hostname = confparse.re_match_iter_typed(RE_HOSTNAME)
     outfile = hostname.upper() + '_interfaces.csv'
-    outfile = Path(os.environ['TEMP'], outfile)
+    outfile = Path('output', outfile)
 
     intf_all = []
 

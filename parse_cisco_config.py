@@ -238,7 +238,6 @@ for x in file_list:
         # add interface info to the all interface list
         intf_all.append(intf)
 
-
     # Output data to CSV file
     with open(outfile, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, dialect='excel')
