@@ -1,3 +1,8 @@
+23, voice_port
+22, server_port
+24, video_port
+26, ap_port
+21, routed_port
 150, security
 230, non_human_port
 240, voice_port
