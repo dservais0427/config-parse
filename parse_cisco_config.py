@@ -118,6 +118,9 @@ for x in file_list:
     # outfile = Path(os.environ['TEMP'], outfile)
     outfile = Path('output', outfile)
 
+    if not os.path.exists('output'):
+        os.makedirs('output')
+
     intf_all = []
 
     # extract thce interface details from config file
