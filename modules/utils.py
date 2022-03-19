@@ -18,6 +18,15 @@ def get_cidr(netmask):
     return sum([bin(int(x)).count('1') for x in netmask.split('.')])
 
 
+def get_wildcard(netmask):
+    wc = ''
+    octet = netmask.split('.')
+    for x in octet:
+        wc += str(255 - int(x)) + '.'
+
+    return wc[:-1]
+
+
 def get_mask(netmask):
     return '.'.join([str((0xffffffff << (32 - netmask) >> i) & 0xff) for i in [24, 16, 8, 0]])
 
