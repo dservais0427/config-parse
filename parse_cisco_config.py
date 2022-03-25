@@ -43,6 +43,8 @@ parser.add_argument('--vlanmap',
                     default='vlanmap.txt')
 parser.add_argument('--outfile', help='CSV filename',
                     default='attribute_file_interface.csv')
+parser.add_argument('--noview', help='Open file for review',
+                    action='store_true')
 
 args = parser.parse_args()
 
@@ -97,6 +99,9 @@ RE_SWVOICE = r'^\sswitchport\svoice\svlan'
 RE_SWACCESS = r'^\sswitchport\saccess\svlan'
 RE_SWNATIVE = r'^\sswitchport\strunk\snative\svlan'
 RE_SWTRUNK = r'^\sswitchport\strunk\sallowed\svlan'
+DFT_ACCESS = 'switchport access vlan 1'
+DFT_NATIVE = 'switchport trunk native vlan 1'
+DFT_ALLOW = 'switchport trunk allowed vlan all'
 
 # Determine if we are using a vlan map file
 if os.path.exists('vlanmap.txt'):
@@ -174,6 +179,8 @@ for x in file_list:
                     vlAllow = vlanStr
                 else:
                     vlAllow = ','.join(vlanCmd)
+                    # if vlAllow == '':
+                    #    vlAllow = DFT_ALLOW
 
             else:
                 for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
@@ -255,4 +262,5 @@ for x in file_list:
                              x[10], x[11], x[12], x[13], x[14]])
 
     # open csv file for review
-    os.startfile(outfile)
+    if not args.noview:
+        os.startfile(outfile)
