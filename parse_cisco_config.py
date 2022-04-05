@@ -6,7 +6,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 import csv
 import os
@@ -43,7 +43,7 @@ parser.add_argument('--vlanmap',
                     default='vlanmap.txt')
 parser.add_argument('--outfile', help='CSV filename',
                     default='attribute_file_interface.csv')
-parser.add_argument('--noview', help='Open file for review',
+parser.add_argument('--noview', help='Do not open file for review',
                     action='store_true')
 
 args = parser.parse_args()
@@ -61,6 +61,14 @@ if args.vlanmap is None:
     vlanmap = 'vlanmap.txt'
 else:
     vlanmap = args.vlanmap
+
+if len(config) > 1:
+    noview = True
+else:
+    noview = False
+
+if args.noview:
+    noview = True
 
 
 # Define script functions
@@ -261,6 +269,7 @@ for x in file_list:
                              x[3], x[4], x[5], x[6], x[7], x[8], x[9],
                              x[10], x[11], x[12], x[13], x[14]])
 
+    print(f'--Completed parsing {outfile}')
     # open csv file for review
-    if not args.noview:
+    if not noview:
         os.startfile(outfile)
