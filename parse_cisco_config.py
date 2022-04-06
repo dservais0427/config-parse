@@ -36,7 +36,8 @@ from tkinter import filedialog as fd
 
 # Process command line
 parser = argparse.ArgumentParser(description='Collect interface information \
-                                 from config file and store in CSV file.')
+                                 from config file and store in CSV file.',
+                                 allow_abbrev=True)
 parser.add_argument('--config', help='Configuration file to parse.')
 parser.add_argument('--vlanmap',
                     help='Text file containing vlan to port type mappings',
