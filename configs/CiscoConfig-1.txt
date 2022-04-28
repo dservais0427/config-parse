@@ -341,25 +341,7 @@ interface GigabitEthernet1/0/3
  channel-group 1 mode on
 !
 interface GigabitEthernet1/0/4
- switchport access vlan 3
- switchport mode access
- switchport voice vlan 240
- switchport port-security maximum 3
- switchport port-security aging time 2
- switchport port-security aging type inactivity
- switchport port-security
- device-tracking attach-policy IPDT_MAX_10
- no logging event link-status
- no snmp trap link-status
- storm-control broadcast level 10.00
- storm-control action trap
- spanning-tree portfast
- spanning-tree bpduguard enable
- spanning-tree guard root
- mls qos trust device cisco-phone
- mls qos trust dscp
- auto qos voip cisco-phone 
- service-policy input LAN_EDGE_IN
+
 !
 interface GigabitEthernet1/0/5
  switchport access vlan 3
