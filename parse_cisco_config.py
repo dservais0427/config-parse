@@ -146,7 +146,7 @@ for x in file_list:
     for intf_cmd in intf_cmds:
         # Clear loop variables
         intf = ['', '', '', '', '', '', '', '', '', '', '']
-        intShut, vlAllow, vlAccess, intDesc = '', '', '', ''
+        intShut, vlAllow, vlAccess, intDesc, pType = '', '', '', '', ''
         vlanCmd, exCmd, stpCmd, portsecCmd = [], [], [], []
         sdplxCmd, qosCmd, ipCmd, rtrCmd = [], [], [], []
 
@@ -168,6 +168,7 @@ for x in file_list:
         for cmd in intf_cmd.re_search_children(RE_PTYPE):
 
             if cmd.text == ' switchport mode access':
+                pType = 'Access'
                 for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
                     vlAccess = cmd1.text.strip()
 
@@ -175,6 +176,7 @@ for x in file_list:
                     vlAllow = cmd2.text.strip()
 
             elif cmd.text == ' switchport mode trunk':
+                pType = 'Trunk'
                 for cmd1 in intf_cmd.re_search_children(RE_SWNATIVE):
                     vlAccess = cmd1.text.strip()
 
@@ -240,6 +242,13 @@ for x in file_list:
 
         for cmd in intf_cmd.re_search_children(r'^\strust\sdevice'):
             qosCmd.append(cmd.text.strip())
+
+        if vlAccess == '' and pType == 'Trunk':
+            vlAccess = DFT_NATIVE
+        elif vlAccess == '':
+            vlAccess = DFT_ACCESS
+        if vlAllow == '' and pType == 'Trunk':
+            vlAllow = DFT_ALLOW
 
         intf.insert(2, checkKey(vlans, vlAccess))
         intf.insert(3, intDesc)
