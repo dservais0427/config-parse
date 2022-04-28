@@ -6,7 +6,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 import csv
 import os
@@ -117,6 +117,7 @@ if os.path.exists('vlanmap.txt'):
     vlans = defineVlans()
     checkVlan = True
 else:
+    print('Unable to find vlanmap.txt')
     checkVlan = False
 
 # Create loop to handle multiple config files
@@ -188,8 +189,6 @@ for x in file_list:
                     vlAllow = vlanStr
                 else:
                     vlAllow = ','.join(vlanCmd)
-                    # if vlAllow == '':
-                    #    vlAllow = DFT_ALLOW
 
             else:
                 for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
