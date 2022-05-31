@@ -1,0 +1,262 @@
+=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2022.04.13 15:58:03 =~=~=~=~=~=~=~=~=~=~=~=
+
+Warning!!! This equipment is the sole property of Brooks Automation Inc.
+Any attempt or unauthorized access is strictly prohibited! 
+
+KRYPTON#show run
+Building configuration...
+
+Current configuration : 6290 bytes
+!
+! Last configuration change at 16:23:03 EDT Tue Feb 22 2022 by sbizzarr
+! NVRAM config last updated at 16:23:06 EDT Tue Feb 22 2022 by sbizzarr
+!
+version 12.2
+no service pad
+service timestamps debug datetime localtime
+service timestamps log datetime localtime
+service password-encryption
+!
+hostname KRYPTON
+!
+enable secret 5 $1$OLcG$EPInssRFGtp7kO3dwdoSE1
+enable password 7 1331110B035D56242F
+!
+username admin password 7 09475C10095D4144
+aaa new-model
+aaa group server tacacs+ AWS-TACACS
+ server 10.243.6.167
+!
+aaa authentication login TACACS group tacacs+ local
+aaa authentication login TAC-ACS group AWS-TACACS local
+aaa authentication enable default group AWS-TACACS enable
+aaa authorization exec default group AWS-TACACS local 
+aaa authorization commands 15 default group AWS-TACACS none 
+aaa accounting exec default start-stop group AWS-TACACS
+aaa accounting commands 15 default start-stop group AWS-TACACS
+!
+aaa session-id common
+clock timezone EDT -5
+clock summer-time EDT recurring
+switch 1 provision ws-c3750-24p
+ip subnet-zero
+ip domain-name brooks.com
+ip name-server 10.10.254.8
+ip name-server 10.10.254.9
+!
+!
+!
+!
+no file verify auto
+!
+spanning-tree mode pvst
+spanning-tree loopguard default
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+spanning-tree uplinkfast
+spanning-tree backbonefast
+!
+vlan internal allocation policy ascending
+!
+interface FastEthernet1/0/1
+ description AP-CHE-15-4
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/2
+ description AP-CHE-15-5
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet1/0/3
+ description AP-CHE-15-9
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/4
+ description AP-CHE-15-10
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/5
+ description AP-CHE-15-11
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 1,15
+ switchport mode trunk
+ spanning-tree portfast
+!
+interface FastEthernet1/0/6
+ description AP-CHE-15-24
+ switchport access vlan 15
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet1/0/7
+ description AP-CHE-15-P12
+ switchport access vlan 15
+ switchport trunk encapsulation dot1q
+ switchport mode access
+ switchport voice vlan 6
+ speed 100
+ duplex full
+ spanning-tree portfast
+!
+interface FastEthernet1/0/8
+ switchport access vlan 6
+ spanning-tree portfast
+!
+interface FastEthernet1/0/9
+ description RF39 Testing WCS
+ switchport access vlan 6
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ spanning-tree portfast
+!
+interface FastEthernet1/0/10
+ switchport access vlan 15
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet1/0/11
+ description RF22
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet1/0/12
+ switchport access vlan 6
+ spanning-tree portfast
+!
+interface FastEthernet1/0/13
+ description NEW_MR74_AP
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/14
+ description AP-CHE-15-27
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/15
+ description SteveS_2A-1047-yellow
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/16
+ description 2A-1045 green
+ switchport access vlan 6
+ switchport mode access
+ switchport voice vlan 6
+ spanning-tree portfast
+!
+interface FastEthernet1/0/17
+ description AP-CHE-15-24
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/18
+ switchport access vlan 6
+ spanning-tree portfast
+!
+interface FastEthernet1/0/19
+ description AP-CHE-P05
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/20
+ description AP-CHE 15-12
+ switchport access vlan 15
+ spanning-tree portfast
+!
+interface FastEthernet1/0/21
+ switchport access vlan 6
+ spanning-tree portfast
+!
+interface FastEthernet1/0/22
+ switchport access vlan 6
+ spanning-tree portfast
+!
+interface FastEthernet1/0/23
+ switchport access vlan 15
+!
+interface FastEthernet1/0/24
+ switchport access vlan 10
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/1
+ description Trk Blk LAMBDA
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/2
+ description Trk Fwd ALPHA
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Vlan1
+ ip address 10.10.250.65 255.255.255.0
+ no ip route-cache
+!
+ip default-gateway 10.10.250.254
+ip classless
+ip http server
+ip http authentication aaa login-authentication TAC-ACS
+!
+logging 10.10.254.152
+logging 10.10.255.72
+logging 10.10.250.140
+snmp-server community chelmlanpub RO
+snmp-server community chelmlanpriv RW
+snmp-server location Chelmsford, MA
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps tty
+snmp-server enable traps cluster
+snmp-server enable traps fru-ctrl
+snmp-server enable traps entity
+snmp-server enable traps cpu threshold
+snmp-server enable traps vtp
+snmp-server enable traps vlancreate
+snmp-server enable traps vlandelete
+snmp-server enable traps flash insertion removal
+snmp-server enable traps port-security
+snmp-server enable traps envmon
+snmp-server enable traps mac-notification
+snmp-server enable traps stackwise
+snmp-server enable traps copy-config
+snmp-server enable traps config
+snmp-server enable traps hsrp
+snmp-server enable traps rtr
+snmp-server enable traps bridge newroot topologychange
+snmp-server enable traps stpx inconsistency root-inconsistency loop-inconsistency
+snmp-server enable traps syslog
+snmp-server enable traps vlan-membership
+snmp-server host 10.10.250.140 version 2c chelmlanpub 
+tacacs-server host 10.243.6.167 key 7 110B0B0A181918
+tacacs-server directed-request
+radius-server source-ports 1645-1646
+!
+control-plane
+!
+banner motd ^C
+Warning!!! This equipment is the sole property of Brooks Automation Inc.
+Any attempt or unauthorized access is strictly prohibited! ^C
+!
+line con 0
+ exec-timeout 15 0
+line vty 0 4
+ exec-timeout 15 0
+ password 7 0450191F1F791A18
+ login authentication TAC-ACS
+ length 23
+ transport input telnet
+line vty 5 15
+ exec-timeout 15 0
+ password 7 1047084C070E470C0E
+ login authentication TAC-ACS
+ transport input telnet
+!
+ntp clock-period 36029620
+ntp server 10.10.250.252
+end
+
