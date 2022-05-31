@@ -6,7 +6,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 import csv
 import os
@@ -52,7 +52,7 @@ args = parser.parse_args()
 if args.config is None:
     root = tk.Tk()
     root.withdraw()
-    config = fd.askopenfilenames(title='Select Router Configuration File')
+    config = fd.askopenfilenames(title='Select Device Configuration File')
     if config == '':
         exit()
 else:
@@ -63,7 +63,7 @@ if args.vlanmap is None:
 else:
     vlanmap = args.vlanmap
 
-if len(config) > 1:
+if len(config) > 5:
     noview = True
 else:
     noview = False
@@ -103,7 +103,7 @@ def checkKey(vlan, key):
 # Define global variables
 RE_INTERFACE = r'^interface(.+?thernet|.+?ort-[Cc]hannel|.+?oopback)'
 RE_HOSTNAME = r'^hostname\s+(\S+)'
-RE_PTYPE = r'^\s(switchport\smode|no\sswitchport)'
+RE_PTYPE = r'^\s(switchport\smode|no\sswitchport|switchport\saccess)'
 RE_SWVOICE = r'^\sswitchport\svoice\svlan'
 RE_SWACCESS = r'^\sswitchport\saccess\svlan'
 RE_SWNATIVE = r'^\sswitchport\strunk\snative\svlan'
@@ -166,16 +166,7 @@ for x in file_list:
 
         # determine if this is a trunk or access port and capture specific info
         for cmd in intf_cmd.re_search_children(RE_PTYPE):
-
-            if cmd.text == ' switchport mode access':
-                pType = 'Access'
-                for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
-                    vlAccess = cmd1.text.strip()
-
-                for cmd2 in intf_cmd.re_search_children(RE_SWVOICE):
-                    vlAllow = cmd2.text.strip()
-
-            elif cmd.text == ' switchport mode trunk':
+            if cmd.text == ' switchport mode trunk':
                 pType = 'Trunk'
                 for cmd1 in intf_cmd.re_search_children(RE_SWNATIVE):
                     vlAccess = cmd1.text.strip()
@@ -191,6 +182,14 @@ for x in file_list:
                     vlAllow = vlanStr
                 else:
                     vlAllow = ','.join(vlanCmd)
+
+            elif cmd.text.startswith(' switchport access vlan') or cmd.text == ' switchport mode access':
+                pType = 'Access'
+                for cmd1 in intf_cmd.re_search_children(RE_SWACCESS):
+                    vlAccess = cmd1.text.strip()
+
+                for cmd2 in intf_cmd.re_search_children(RE_SWVOICE):
+                    vlAllow = cmd2.text.strip()
 
             else:
                 for cmd1 in intf_cmd.re_search_children(r'^\sip\saddress'):
