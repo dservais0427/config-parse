@@ -58,6 +58,11 @@ if args.vlanmap is None:
 else:
     vlanmap = args.vlanmap
 
+if len(config) > 5:
+    noview = True
+else:
+    noview = False
+
 
 # Define script functions
 def defineVlans():
@@ -169,5 +174,7 @@ for x in file_list:
             writer.writerow([x[0], '', x[1], checkKey(vlans, x[4]), x[3], x[4],
                              x[5], x[6], x[7], x[8], x[9], x[10], x[11]])
 
+    print(f'--Completed parsing {outfile}')
     # open csv file for review
-    os.startfile(outfile)
+    if not noview:
+        os.startfile(outfile)

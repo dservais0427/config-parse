@@ -101,13 +101,14 @@ def checkKey(vlan, key):
 
 
 # Define global variables
-RE_INTERFACE = r'^interface(.+?thernet|.+?ort-[Cc]hannel|.+?oopback)'
-RE_HOSTNAME = r'^hostname\s+(\S+)'
+RE_INTERFACE = r'^interface(.+?thernet|.+?ort-[Cc]hannel|.+?oopback|.Gi|.Te)'
+RE_HOSTNAME = r'^hostname\s+(.*)'
 RE_PTYPE = r'^\s(switchport\smode|no\sswitchport|switchport\saccess)'
 RE_SWVOICE = r'^\sswitchport\svoice\svlan'
 RE_SWACCESS = r'^\sswitchport\saccess\svlan'
-RE_SWNATIVE = r'^\sswitchport\strunk\snative\svlan'
-RE_SWTRUNK = r'^\sswitchport\strunk\sallowed\svlan'
+RE_SWNATIVE = r'^\sswitchport\sgeneral\spvid'
+RE_SWTRUNK = r'^\sswitchport\sgeneral\sallowed\svlan'
+
 DFT_ACCESS = 'switchport access vlan 1'
 DFT_NATIVE = 'switchport trunk native vlan 1'
 DFT_ALLOW = 'switchport trunk allowed vlan all'
@@ -129,7 +130,7 @@ for x in file_list:
     confparse = CiscoConfParse(x)
 
     hostname = confparse.re_match_iter_typed(RE_HOSTNAME)
-    hostname = hostname.strip('"')
+    hostname = hostname.strip('"').replace(' ', '')
     outfile = hostname.upper() + '_interfaces.csv'
     # outfile = Path(os.environ['TEMP'], outfile)
     outfile = Path('output', outfile)
@@ -157,7 +158,7 @@ for x in file_list:
 
         # search for the description command
         for cmd in intf_cmd.re_search_children(r"^\sdescription"):
-            intDesc = cmd.text.strip()[12:]
+            intDesc = cmd.text.strip()[12:].strip('"')
 
         #  intf_name.startswith('lo'):
         if re.match(r'[L|l]oopback', intf_name) is not None:
@@ -167,7 +168,7 @@ for x in file_list:
 
         # determine if this is a trunk or access port and capture specific info
         for cmd in intf_cmd.re_search_children(RE_PTYPE):
-            if cmd.text == ' switchport mode trunk':
+            if cmd.text == ' switchport mode trunk' or cmd.text == ' switchport mode general':
                 pType = 'Trunk'
                 for cmd1 in intf_cmd.re_search_children(RE_SWNATIVE):
                     vlAccess = cmd1.text.strip()
@@ -176,7 +177,7 @@ for x in file_list:
                     vlanCmd.append(cmd2.text.strip())
 
                 if len(vlanCmd) > 1:
-                    vlanStr = 'switchport trunk allowed vlan ' \
+                    vlanStr = 'switchport general allowed vlan ' \
                         + vlanCmd[0].split()[-1]
                     for x in range(1, len(vlanCmd)):
                         vlanStr += ',' + vlanCmd[x].split()[-1]

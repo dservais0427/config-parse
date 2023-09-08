@@ -1,6 +1,4 @@
-480, server-port
-488, iscsi-port
-489, vmotion-port
-910, other
-920, other
-930, voice-port
+70, ap
+90, voice-port
+100, uplink
+190, voice-port

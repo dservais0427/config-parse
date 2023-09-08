@@ -9,6 +9,8 @@ def replace_dash(text):
 def replace_space(text):
     return text.replace(' ', '_').replace('-', '_')
 
+def remove_space(text):
+    return text.replace(' ', '')
 
 def get_cidr(netmask):
     '''
