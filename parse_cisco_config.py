@@ -6,7 +6,7 @@
 """
 
 __author__ = 'David Servais'
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 import csv
 import os
@@ -98,6 +98,23 @@ def checkKey(vlan, key):
             return vlan[key]
         else:
             return 'data_port'
+
+
+def cisco2aruba(interface):
+    """
+    Convert Cisco interface name to Aruba CX interface name.
+    """
+    # Split the interface name into parts
+    parts = interface.split('/')
+
+    if interface.startswith('GigabitEthernet0'):
+        return ''
+    elif interface.startswith('FastEthernet0'):
+        return ''
+    elif '/' in interface:
+        return f"interface {parts[0][-1]}/1/{parts[2]}"
+    else:
+        return ''
 
 
 # Define global variables
@@ -273,9 +290,10 @@ for x in file_list:
                          'QOS', 'Routing', 'Port Security'])
 
         for x in intf_all:
-            writer.writerow([x[0], '', x[1], checkKey(vlans, x[4].strip()),
-                             x[3], x[4], x[5], x[6], x[7], x[8], x[9],
-                             x[10], x[11], x[12], x[13], x[14]])
+            writer.writerow([x[0], '', cisco2aruba(x[0]),
+                            checkKey(vlans, x[4].strip()), x[3], x[4],
+                            x[5], x[6], x[7], x[8], x[9], x[10], x[11],
+                            x[12], x[13], x[14]])
 
     print(f'--Completed parsing {outfile}')
     # open csv file for review
