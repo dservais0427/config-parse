@@ -107,7 +107,7 @@ RE_PTYPE = r'^\s(switchport\smode|no\sswitchport|switchport\saccess)'
 RE_SWVOICE = r'^\sswitchport\svoice\svlan'
 RE_SWACCESS = r'^\sswitchport\saccess\svlan'
 RE_SWNATIVE = r'^\sswitchport\sgeneral\spvid'
-RE_SWTRUNK = r'^\sswitchport\sgeneral\sallowed\svlan'
+RE_SWTRUNK = r'^\sswitchport\sgeneral\sallowed\svlan\sadd'
 
 DFT_ACCESS = 'switchport access vlan 1'
 DFT_NATIVE = 'switchport trunk native vlan 1'
