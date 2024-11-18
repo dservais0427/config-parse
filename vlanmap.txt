@@ -1,4 +1,1 @@
-98, ap_port
-2, server_port
-99, mgmt_port
-1, uplink
+41, voice_port
